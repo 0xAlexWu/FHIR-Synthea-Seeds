@@ -1,7 +1,8 @@
 PYTHON ?= python3
 PROFILE_SCRIPT := scripts/fhir_pool_profiler.py
+PILOT_SCRIPT := scripts/select_synthea_pilot50.py
 
-.PHONY: profile-large profile-dir generate-2000-and-profile
+.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50
 
 profile-large:
 	$(PYTHON) $(PROFILE_SCRIPT) profile-large --output-dir outputs/large
@@ -14,3 +15,6 @@ profile-dir:
 generate-2000-and-profile:
 	@if [ -z "$(REPO_DIR)" ]; then echo "REPO_DIR is required"; exit 2; fi
 	$(PYTHON) $(PROFILE_SCRIPT) generate-and-profile --repo-dir "$(REPO_DIR)" --patient-count 2000 --output-dir outputs/custom-2000
+
+select-pilot50:
+	$(PYTHON) $(PILOT_SCRIPT) --output-dir outputs/large

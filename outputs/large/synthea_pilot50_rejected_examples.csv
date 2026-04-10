@@ -1,0 +1,13 @@
+resource_type,resource_id,rejection_reason
+Observation,9a80a522-4f46-e499-4ece-0879ac6e5b7d,"Observation near-miss: non-numeric and missing unit, so numeric-first pilot preference won."
+Observation,ebbe7fe3-a32b-2587-15fe-97b9cc5eec13,"Observation near-miss: non-numeric and missing unit, so numeric-first pilot preference won."
+Observation,b840b0e2-1d8e-48dc-3d30-bb00c3f0bcce,"Observation near-miss: non-numeric and missing unit, so numeric-first pilot preference won."
+Observation,ef19a098-b430-3c3a-0c6b-351b8f5a305e,"Observation near-miss: non-numeric and missing unit, so numeric-first pilot preference won."
+Observation,91c6fb2d-3d99-b5db-8c0c-fb04b1afce07,Observation near-miss: high complexity was unnecessary because enough moderate numeric Observations were available.
+Observation,e7631fff-2e6c-3b7b-5627-22890065a23d,Observation near-miss: high complexity was unnecessary because enough moderate numeric Observations were available.
+Observation,2b9d5297-688f-1846-246e-a83d2035ed6d,Observation near-miss: high complexity was unnecessary because enough moderate numeric Observations were available.
+Observation,3829e011-02dc-8d79-20e1-4f9e05133d2d,Observation near-miss: high complexity was unnecessary because enough moderate numeric Observations were available.
+Condition,bd19a17b-4b1d-ed35-48bb-50d8ce6c5f7f,"Condition near-miss: acceptable after linked-context relaxation, but omitted once the quota was filled."
+Condition,9507848e-c89e-b5fc-17d4-1274636f6030,"Condition near-miss: acceptable after linked-context relaxation, but omitted once the quota was filled."
+Patient,07066faf-a4af-97d3-0780-89e015322ec5,"Patient near-miss: meets preferred criteria, but left out after the 5-patient quota was filled."
+Patient,8ab92e59-2a98-132d-9dfe-3b76fd750189,"Patient near-miss: meets preferred criteria, but left out after the 5-patient quota was filled."

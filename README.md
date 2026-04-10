@@ -41,6 +41,18 @@ Equivalent `make` target:
 make generate-2000-and-profile REPO_DIR=/path/to/sample-bulk-fhir-datasets
 ```
 
+Select the first-pass 50-seed pilot set from the existing Large outputs:
+
+```bash
+python3 scripts/select_synthea_pilot50.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make select-pilot50
+```
+
 If you prefer to run the upstream generator yourself first, this remains
 supported too:
 
@@ -63,6 +75,13 @@ Each profiling run writes:
 - `candidate_seed_catalog.csv.gz`
 - `pilot_quota_recommendation.md`
 - `large_dataset_summary.md`
+
+The pilot-selection step writes:
+
+- `synthea_pilot50_selected.csv`
+- `synthea_pilot50_selected.jsonl`
+- `synthea_pilot50_summary.md`
+- `synthea_pilot50_rejected_examples.csv`
 
 For GitHub-friendly publication, the compressed `candidate_seed_catalog.csv.gz`
 is intended to be checked in, while the raw `candidate_seed_catalog.csv` can stay
