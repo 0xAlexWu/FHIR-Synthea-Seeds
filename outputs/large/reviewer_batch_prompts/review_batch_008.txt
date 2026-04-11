@@ -1,0 +1,590 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-015__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Cholesterol [Mass/volume] in Serum or Plasma: 196.73 mg/dL. Status: final. Date: 2001-10-09.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "16b9fbe2-3ca5-2988-fe3d-70730ce38371",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2093-3",
+        "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Cholesterol [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/16b9fbe2-3ca5-2988-6385-ddd726396505"
+  },
+  "encounter": {
+    "reference": "Encounter/16b9fbe2-3ca5-2988-075e-d4709b453397"
+  },
+  "effectiveDateTime": "2001-10-09T19:51:20-03:00",
+  "issued": "2001-10-09T19:51:20.673-03:00",
+  "valueQuantity": {
+    "value": 196.73,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-015__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Cholesterol [Mass/volume] in Serum or Plasma; Result=196.73 mg/dL; Category=Laboratory; Status=final; Date=2001-10-09
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "16b9fbe2-3ca5-2988-fe3d-70730ce38371",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2093-3",
+        "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Cholesterol [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/16b9fbe2-3ca5-2988-6385-ddd726396505"
+  },
+  "encounter": {
+    "reference": "Encounter/16b9fbe2-3ca5-2988-075e-d4709b453397"
+  },
+  "effectiveDateTime": "2001-10-09T19:51:20-03:00",
+  "issued": "2001-10-09T19:51:20.673-03:00",
+  "valueQuantity": {
+    "value": 196.73,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-015__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Cholesterol [Mass/volume] in Serum or Plasma 196.73 mg/dL on 2001-10-09, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "16b9fbe2-3ca5-2988-fe3d-70730ce38371",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2093-3",
+        "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Cholesterol [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/16b9fbe2-3ca5-2988-6385-ddd726396505"
+  },
+  "encounter": {
+    "reference": "Encounter/16b9fbe2-3ca5-2988-075e-d4709b453397"
+  },
+  "effectiveDateTime": "2001-10-09T19:51:20-03:00",
+  "issued": "2001-10-09T19:51:20.673-03:00",
+  "valueQuantity": {
+    "value": 196.73,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-016__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Body Weight: 23.8 kg. Status: final. Date: 2018-05-26.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "9131aea7-a902-f1c5-7b34-e80e1340baff",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/9131aea7-a902-f1c5-c23f-260c66fbde6d"
+  },
+  "encounter": {
+    "reference": "Encounter/9131aea7-a902-f1c5-8ed6-4b819d4b4e5b"
+  },
+  "effectiveDateTime": "2018-05-26T06:55:50-03:00",
+  "issued": "2018-05-26T06:55:50.861-03:00",
+  "valueQuantity": {
+    "value": 23.8,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-016__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Body Weight; Result=23.8 kg; Category=Vital signs; Status=final; Date=2018-05-26
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "9131aea7-a902-f1c5-7b34-e80e1340baff",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/9131aea7-a902-f1c5-c23f-260c66fbde6d"
+  },
+  "encounter": {
+    "reference": "Encounter/9131aea7-a902-f1c5-8ed6-4b819d4b4e5b"
+  },
+  "effectiveDateTime": "2018-05-26T06:55:50-03:00",
+  "issued": "2018-05-26T06:55:50.861-03:00",
+  "valueQuantity": {
+    "value": 23.8,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-016__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Body Weight 23.8 kg on 2018-05-26, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "9131aea7-a902-f1c5-7b34-e80e1340baff",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/9131aea7-a902-f1c5-c23f-260c66fbde6d"
+  },
+  "encounter": {
+    "reference": "Encounter/9131aea7-a902-f1c5-8ed6-4b819d4b4e5b"
+  },
+  "effectiveDateTime": "2018-05-26T06:55:50-03:00",
+  "issued": "2018-05-26T06:55:50.861-03:00",
+  "valueQuantity": {
+    "value": 23.8,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-017__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+pH of Urine by Test strip: 5.9316 pH. Status: final. Date: 2021-08-07.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "39d1ceb9-5ea2-4699-8ef5-4e4726d044df",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5803-2",
+        "display": "pH of Urine by Test strip"
+      }
+    ],
+    "text": "pH of Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/39d1ceb9-5ea2-4699-2674-dae9bc3c9115"
+  },
+  "encounter": {
+    "reference": "Encounter/39d1ceb9-5ea2-4699-9cde-26ee04ee5227"
+  },
+  "effectiveDateTime": "2021-08-07T07:29:56-03:00",
+  "issued": "2021-08-07T07:29:56.682-03:00",
+  "valueQuantity": {
+    "value": 5.9316,
+    "unit": "pH",
+    "system": "http://unitsofmeasure.org",
+    "code": "pH"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-017__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=pH of Urine by Test strip; Result=5.9316 pH; Category=Laboratory; Status=final; Date=2021-08-07
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "39d1ceb9-5ea2-4699-8ef5-4e4726d044df",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5803-2",
+        "display": "pH of Urine by Test strip"
+      }
+    ],
+    "text": "pH of Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/39d1ceb9-5ea2-4699-2674-dae9bc3c9115"
+  },
+  "encounter": {
+    "reference": "Encounter/39d1ceb9-5ea2-4699-9cde-26ee04ee5227"
+  },
+  "effectiveDateTime": "2021-08-07T07:29:56-03:00",
+  "issued": "2021-08-07T07:29:56.682-03:00",
+  "valueQuantity": {
+    "value": 5.9316,
+    "unit": "pH",
+    "system": "http://unitsofmeasure.org",
+    "code": "pH"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-017__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+pH of Urine by Test strip 5.9316 pH on 2021-08-07, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "39d1ceb9-5ea2-4699-8ef5-4e4726d044df",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5803-2",
+        "display": "pH of Urine by Test strip"
+      }
+    ],
+    "text": "pH of Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/39d1ceb9-5ea2-4699-2674-dae9bc3c9115"
+  },
+  "encounter": {
+    "reference": "Encounter/39d1ceb9-5ea2-4699-9cde-26ee04ee5227"
+  },
+  "effectiveDateTime": "2021-08-07T07:29:56-03:00",
+  "issued": "2021-08-07T07:29:56.682-03:00",
+  "valueQuantity": {
+    "value": 5.9316,
+    "unit": "pH",
+    "system": "http://unitsofmeasure.org",
+    "code": "pH"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-018__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma: 30.357 U/L. Status: final. Date: 1971-07-25.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a5e34875-6f68-6cdc-ce43-65912c0af868",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/a5e34875-6f68-6cdc-dfce-6f70e2ce43a9"
+  },
+  "encounter": {
+    "reference": "Encounter/a5e34875-6f68-6cdc-103c-fb1f68b18ed2"
+  },
+  "effectiveDateTime": "1971-07-25T00:10:26-03:00",
+  "issued": "1971-07-25T00:10:26.991-03:00",
+  "valueQuantity": {
+    "value": 30.357,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}

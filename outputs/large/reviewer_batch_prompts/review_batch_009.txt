@@ -1,0 +1,591 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-018__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma; Result=30.357 U/L; Category=Laboratory; Status=final; Date=1971-07-25
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a5e34875-6f68-6cdc-ce43-65912c0af868",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/a5e34875-6f68-6cdc-dfce-6f70e2ce43a9"
+  },
+  "encounter": {
+    "reference": "Encounter/a5e34875-6f68-6cdc-103c-fb1f68b18ed2"
+  },
+  "effectiveDateTime": "1971-07-25T00:10:26-03:00",
+  "issued": "1971-07-25T00:10:26.991-03:00",
+  "valueQuantity": {
+    "value": 30.357,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-018__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma 30.357 U/L on 1971-07-25, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a5e34875-6f68-6cdc-ce43-65912c0af868",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/a5e34875-6f68-6cdc-dfce-6f70e2ce43a9"
+  },
+  "encounter": {
+    "reference": "Encounter/a5e34875-6f68-6cdc-103c-fb1f68b18ed2"
+  },
+  "effectiveDateTime": "1971-07-25T00:10:26-03:00",
+  "issued": "1971-07-25T00:10:26.991-03:00",
+  "valueQuantity": {
+    "value": 30.357,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-019__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Protein [Mass/volume] in Serum or Plasma: 7.5229 g/dL. Status: final. Date: 2020-02-14.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "367f0429-7777-7fc9-1698-a9154f6938e3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2885-2",
+        "display": "Protein [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Protein [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/367f0429-7777-7fc9-799d-a850b2bfe960"
+  },
+  "encounter": {
+    "reference": "Encounter/367f0429-7777-7fc9-604c-81b39ead82a3"
+  },
+  "effectiveDateTime": "2020-02-14T23:45:18-03:00",
+  "issued": "2020-02-14T23:45:18.092-03:00",
+  "valueQuantity": {
+    "value": 7.5229,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-019__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Protein [Mass/volume] in Serum or Plasma; Result=7.5229 g/dL; Category=Laboratory; Status=final; Date=2020-02-14
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "367f0429-7777-7fc9-1698-a9154f6938e3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2885-2",
+        "display": "Protein [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Protein [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/367f0429-7777-7fc9-799d-a850b2bfe960"
+  },
+  "encounter": {
+    "reference": "Encounter/367f0429-7777-7fc9-604c-81b39ead82a3"
+  },
+  "effectiveDateTime": "2020-02-14T23:45:18-03:00",
+  "issued": "2020-02-14T23:45:18.092-03:00",
+  "valueQuantity": {
+    "value": 7.5229,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-019__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Protein [Mass/volume] in Serum or Plasma 7.5229 g/dL on 2020-02-14, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "367f0429-7777-7fc9-1698-a9154f6938e3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2885-2",
+        "display": "Protein [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Protein [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/367f0429-7777-7fc9-799d-a850b2bfe960"
+  },
+  "encounter": {
+    "reference": "Encounter/367f0429-7777-7fc9-604c-81b39ead82a3"
+  },
+  "effectiveDateTime": "2020-02-14T23:45:18-03:00",
+  "issued": "2020-02-14T23:45:18.092-03:00",
+  "valueQuantity": {
+    "value": 7.5229,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-020__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Potassium [Moles/volume] in Serum or Plasma: 3.74 mmol/L. Status: final. Date: 2020-09-07.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "3829e011-02dc-8d79-e4b5-d0669f521b84",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/3829e011-02dc-8d79-d708-2636a1e8d287"
+  },
+  "encounter": {
+    "reference": "Encounter/3829e011-02dc-8d79-57d3-75b0e86facf0"
+  },
+  "effectiveDateTime": "2020-09-07T08:01:24-03:00",
+  "issued": "2020-09-07T08:01:24.033-03:00",
+  "valueQuantity": {
+    "value": 3.74,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-020__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Potassium [Moles/volume] in Serum or Plasma; Result=3.74 mmol/L; Category=Laboratory; Status=final; Date=2020-09-07
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "3829e011-02dc-8d79-e4b5-d0669f521b84",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/3829e011-02dc-8d79-d708-2636a1e8d287"
+  },
+  "encounter": {
+    "reference": "Encounter/3829e011-02dc-8d79-57d3-75b0e86facf0"
+  },
+  "effectiveDateTime": "2020-09-07T08:01:24-03:00",
+  "issued": "2020-09-07T08:01:24.033-03:00",
+  "valueQuantity": {
+    "value": 3.74,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-020__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Potassium [Moles/volume] in Serum or Plasma 3.74 mmol/L on 2020-09-07, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "3829e011-02dc-8d79-e4b5-d0669f521b84",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/3829e011-02dc-8d79-d708-2636a1e8d287"
+  },
+  "encounter": {
+    "reference": "Encounter/3829e011-02dc-8d79-57d3-75b0e86facf0"
+  },
+  "effectiveDateTime": "2020-09-07T08:01:24-03:00",
+  "issued": "2020-09-07T08:01:24.033-03:00",
+  "valueQuantity": {
+    "value": 3.74,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-021__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Heart rate: 75 /min. Status: final. Date: 2020-03-21.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "740da266-9277-6106-11f3-2909e9373c7b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-heart-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "8867-4",
+        "display": "Heart rate"
+      }
+    ],
+    "text": "Heart rate"
+  },
+  "subject": {
+    "reference": "Patient/740da266-9277-6106-7e79-313b57e89916"
+  },
+  "encounter": {
+    "reference": "Encounter/740da266-9277-6106-eff6-da2c347dd8ca"
+  },
+  "effectiveDateTime": "2020-03-21T08:29:17-03:00",
+  "issued": "2020-03-21T08:29:17.824-03:00",
+  "valueQuantity": {
+    "value": 75,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-021__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Heart rate; Result=75 /min; Category=Vital signs; Status=final; Date=2020-03-21
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "740da266-9277-6106-11f3-2909e9373c7b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-heart-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "8867-4",
+        "display": "Heart rate"
+      }
+    ],
+    "text": "Heart rate"
+  },
+  "subject": {
+    "reference": "Patient/740da266-9277-6106-7e79-313b57e89916"
+  },
+  "encounter": {
+    "reference": "Encounter/740da266-9277-6106-eff6-da2c347dd8ca"
+  },
+  "effectiveDateTime": "2020-03-21T08:29:17-03:00",
+  "issued": "2020-03-21T08:29:17.824-03:00",
+  "valueQuantity": {
+    "value": 75,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}

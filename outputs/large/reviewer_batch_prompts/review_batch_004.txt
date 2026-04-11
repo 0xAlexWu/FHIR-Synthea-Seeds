@@ -1,0 +1,584 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-001__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma 129.36 U/L on 2022-03-30, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "98758d75-d95a-39ca-eace-53571ec75f19",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/98758d75-d95a-39ca-cac0-06ad37370e23"
+  },
+  "encounter": {
+    "reference": "Encounter/98758d75-d95a-39ca-25c1-e80fcf071c3f"
+  },
+  "effectiveDateTime": "2022-03-30T03:59:28-03:00",
+  "issued": "2022-03-30T03:59:28.325-03:00",
+  "valueQuantity": {
+    "value": 129.36,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-002__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]: 1 {score}. Status: final. Date: 2016-10-17.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-c055-78d69eeb10aa",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "55758-7",
+        "display": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+      }
+    ],
+    "text": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-ad39-d79de1526ef7"
+  },
+  "effectiveDateTime": "2016-10-17T08:34:40-03:00",
+  "issued": "2016-10-17T08:34:40.603-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-002__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]; Result=1 {score}; Category=Survey; Status=final; Date=2016-10-17
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-c055-78d69eeb10aa",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "55758-7",
+        "display": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+      }
+    ],
+    "text": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-ad39-d79de1526ef7"
+  },
+  "effectiveDateTime": "2016-10-17T08:34:40-03:00",
+  "issued": "2016-10-17T08:34:40.603-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-002__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Patient Health Questionnaire 2 item (PHQ-2) total score [Reported] 1 {score} on 2016-10-17, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-c055-78d69eeb10aa",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "55758-7",
+        "display": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+      }
+    ],
+    "text": "Patient Health Questionnaire 2 item (PHQ-2) total score [Reported]"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-ad39-d79de1526ef7"
+  },
+  "effectiveDateTime": "2016-10-17T08:34:40-03:00",
+  "issued": "2016-10-17T08:34:40.603-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-003__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Respiratory rate: 12 /min. Status: final. Date: 2013-12-09.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "ed952e46-b99b-88f6-0bc1-8f666074aa32",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/ed952e46-b99b-88f6-5792-ab8cbf8d7b84"
+  },
+  "encounter": {
+    "reference": "Encounter/ed952e46-b99b-88f6-af4c-04a1d25f97ac"
+  },
+  "effectiveDateTime": "2013-12-09T14:04:51-03:00",
+  "issued": "2013-12-09T14:04:51.798-03:00",
+  "valueQuantity": {
+    "value": 12,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-003__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Respiratory rate; Result=12 /min; Category=Vital signs; Status=final; Date=2013-12-09
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "ed952e46-b99b-88f6-0bc1-8f666074aa32",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/ed952e46-b99b-88f6-5792-ab8cbf8d7b84"
+  },
+  "encounter": {
+    "reference": "Encounter/ed952e46-b99b-88f6-af4c-04a1d25f97ac"
+  },
+  "effectiveDateTime": "2013-12-09T14:04:51-03:00",
+  "issued": "2013-12-09T14:04:51.798-03:00",
+  "valueQuantity": {
+    "value": 12,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-003__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Respiratory rate 12 /min on 2013-12-09, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "ed952e46-b99b-88f6-0bc1-8f666074aa32",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/ed952e46-b99b-88f6-5792-ab8cbf8d7b84"
+  },
+  "encounter": {
+    "reference": "Encounter/ed952e46-b99b-88f6-af4c-04a1d25f97ac"
+  },
+  "effectiveDateTime": "2013-12-09T14:04:51-03:00",
+  "issued": "2013-12-09T14:04:51.798-03:00",
+  "valueQuantity": {
+    "value": 12,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-004__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Body Weight: 85.9 kg. Status: final. Date: 2021-06-13.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "eb58ee3d-7579-10ba-7029-da628f7bd025",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/6cfac06f-9926-607b-4134-60fd14557160"
+  },
+  "encounter": {
+    "reference": "Encounter/bc315015-3d2e-19d7-a688-2f39137562f4"
+  },
+  "effectiveDateTime": "2021-06-13T08:09:18-04:00",
+  "issued": "2021-06-13T08:09:18.620-04:00",
+  "valueQuantity": {
+    "value": 85.9,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-004__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Body Weight; Result=85.9 kg; Category=Vital signs; Status=final; Date=2021-06-13
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "eb58ee3d-7579-10ba-7029-da628f7bd025",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/6cfac06f-9926-607b-4134-60fd14557160"
+  },
+  "encounter": {
+    "reference": "Encounter/bc315015-3d2e-19d7-a688-2f39137562f4"
+  },
+  "effectiveDateTime": "2021-06-13T08:09:18-04:00",
+  "issued": "2021-06-13T08:09:18.620-04:00",
+  "valueQuantity": {
+    "value": 85.9,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-004__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Body Weight 85.9 kg on 2021-06-13, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "eb58ee3d-7579-10ba-7029-da628f7bd025",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-body-weight"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "29463-7",
+        "display": "Body Weight"
+      }
+    ],
+    "text": "Body Weight"
+  },
+  "subject": {
+    "reference": "Patient/6cfac06f-9926-607b-4134-60fd14557160"
+  },
+  "encounter": {
+    "reference": "Encounter/bc315015-3d2e-19d7-a688-2f39137562f4"
+  },
+  "effectiveDateTime": "2021-06-13T08:09:18-04:00",
+  "issued": "2021-06-13T08:09:18.620-04:00",
+  "valueQuantity": {
+    "value": 85.9,
+    "unit": "kg",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg"
+  }
+}

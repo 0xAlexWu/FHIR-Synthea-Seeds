@@ -1,0 +1,575 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-005__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Pain severity - 0-10 verbal numeric rating [Score] - Reported: 1 {score}. Status: final. Date: 2014-08-24.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "674c6866-ff9f-ebf2-ff57-3ac77bf43551",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/674c6866-ff9f-ebf2-fa3a-eff5ab002ec1"
+  },
+  "encounter": {
+    "reference": "Encounter/674c6866-ff9f-ebf2-4d81-249ec4f74f03"
+  },
+  "effectiveDateTime": "2014-08-24T13:44:05-03:00",
+  "issued": "2014-08-24T13:44:05.243-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-005__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Pain severity - 0-10 verbal numeric rating [Score] - Reported; Result=1 {score}; Category=Vital signs; Status=final; Date=2014-08-24
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "674c6866-ff9f-ebf2-ff57-3ac77bf43551",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/674c6866-ff9f-ebf2-fa3a-eff5ab002ec1"
+  },
+  "encounter": {
+    "reference": "Encounter/674c6866-ff9f-ebf2-4d81-249ec4f74f03"
+  },
+  "effectiveDateTime": "2014-08-24T13:44:05-03:00",
+  "issued": "2014-08-24T13:44:05.243-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-005__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Pain severity - 0-10 verbal numeric rating [Score] - Reported 1 {score} on 2014-08-24, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "674c6866-ff9f-ebf2-ff57-3ac77bf43551",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/674c6866-ff9f-ebf2-fa3a-eff5ab002ec1"
+  },
+  "encounter": {
+    "reference": "Encounter/674c6866-ff9f-ebf2-4d81-249ec4f74f03"
+  },
+  "effectiveDateTime": "2014-08-24T13:44:05-03:00",
+  "issued": "2014-08-24T13:44:05.243-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-006__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Albumin [Mass/volume] in Serum or Plasma: 4.1117 g/dL. Status: final. Date: 2018-05-31.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b9df4e45-05ba-5456-c0f6-7006fbb045ab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "1751-7",
+        "display": "Albumin [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Albumin [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/b9df4e45-05ba-5456-4656-cdfcd257db32"
+  },
+  "encounter": {
+    "reference": "Encounter/b9df4e45-05ba-5456-3b46-75264b13aa32"
+  },
+  "effectiveDateTime": "2018-05-31T04:43:10-03:00",
+  "issued": "2018-05-31T04:43:10.247-03:00",
+  "valueQuantity": {
+    "value": 4.1117,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-006__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Albumin [Mass/volume] in Serum or Plasma; Result=4.1117 g/dL; Category=Laboratory; Status=final; Date=2018-05-31
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b9df4e45-05ba-5456-c0f6-7006fbb045ab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "1751-7",
+        "display": "Albumin [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Albumin [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/b9df4e45-05ba-5456-4656-cdfcd257db32"
+  },
+  "encounter": {
+    "reference": "Encounter/b9df4e45-05ba-5456-3b46-75264b13aa32"
+  },
+  "effectiveDateTime": "2018-05-31T04:43:10-03:00",
+  "issued": "2018-05-31T04:43:10.247-03:00",
+  "valueQuantity": {
+    "value": 4.1117,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-006__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Albumin [Mass/volume] in Serum or Plasma 4.1117 g/dL on 2018-05-31, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b9df4e45-05ba-5456-c0f6-7006fbb045ab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "1751-7",
+        "display": "Albumin [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Albumin [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/b9df4e45-05ba-5456-4656-cdfcd257db32"
+  },
+  "encounter": {
+    "reference": "Encounter/b9df4e45-05ba-5456-3b46-75264b13aa32"
+  },
+  "effectiveDateTime": "2018-05-31T04:43:10-03:00",
+  "issued": "2018-05-31T04:43:10.247-03:00",
+  "valueQuantity": {
+    "value": 4.1117,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-007__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+MCH [Entitic mass] by Automated count: 29.994 pg. Status: final. Date: 2016-11-28.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b262c778-41c9-499a-7267-c725c080ddf6",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "785-6",
+        "display": "MCH [Entitic mass] by Automated count"
+      }
+    ],
+    "text": "MCH [Entitic mass] by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/b262c778-41c9-499a-54c0-ed167d6a251a"
+  },
+  "encounter": {
+    "reference": "Encounter/b262c778-41c9-499a-f27b-46c55aa1eb51"
+  },
+  "effectiveDateTime": "2016-11-28T04:52:32-03:00",
+  "issued": "2016-11-28T04:52:32.723-03:00",
+  "valueQuantity": {
+    "value": 29.994,
+    "unit": "pg",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-007__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=MCH [Entitic mass] by Automated count; Result=29.994 pg; Category=Laboratory; Status=final; Date=2016-11-28
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b262c778-41c9-499a-7267-c725c080ddf6",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "785-6",
+        "display": "MCH [Entitic mass] by Automated count"
+      }
+    ],
+    "text": "MCH [Entitic mass] by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/b262c778-41c9-499a-54c0-ed167d6a251a"
+  },
+  "encounter": {
+    "reference": "Encounter/b262c778-41c9-499a-f27b-46c55aa1eb51"
+  },
+  "effectiveDateTime": "2016-11-28T04:52:32-03:00",
+  "issued": "2016-11-28T04:52:32.723-03:00",
+  "valueQuantity": {
+    "value": 29.994,
+    "unit": "pg",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-007__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+MCH [Entitic mass] by Automated count 29.994 pg on 2016-11-28, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "b262c778-41c9-499a-7267-c725c080ddf6",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "785-6",
+        "display": "MCH [Entitic mass] by Automated count"
+      }
+    ],
+    "text": "MCH [Entitic mass] by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/b262c778-41c9-499a-54c0-ed167d6a251a"
+  },
+  "encounter": {
+    "reference": "Encounter/b262c778-41c9-499a-f27b-46c55aa1eb51"
+  },
+  "effectiveDateTime": "2016-11-28T04:52:32-03:00",
+  "issued": "2016-11-28T04:52:32.723-03:00",
+  "valueQuantity": {
+    "value": 29.994,
+    "unit": "pg",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-008__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+pH of Urine by Test strip: 5.5205 pH. Status: final. Date: 2011-06-22.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "c30f6311-cc84-486f-64b5-1ee03f48f84e",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5803-2",
+        "display": "pH of Urine by Test strip"
+      }
+    ],
+    "text": "pH of Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/c30f6311-cc84-486f-c751-87b942ca9dbd"
+  },
+  "encounter": {
+    "reference": "Encounter/c30f6311-cc84-486f-5668-b5d9c5b2c3a7"
+  },
+  "effectiveDateTime": "2011-06-22T15:38:58-03:00",
+  "issued": "2011-06-22T15:38:58.140-03:00",
+  "valueQuantity": {
+    "value": 5.5205,
+    "unit": "pH",
+    "system": "http://unitsofmeasure.org",
+    "code": "pH"
+  }
+}

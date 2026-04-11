@@ -1,0 +1,590 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-011__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Leukocytes [#/volume] in Blood by Automated count 7.7845 10*3/uL on 2021-06-16, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "fccb908f-891b-a01d-ae39-fb1d44cf3ad0",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6690-2",
+        "display": "Leukocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Leukocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/fccb908f-891b-a01d-9e33-bb07188331f2"
+  },
+  "encounter": {
+    "reference": "Encounter/fccb908f-891b-a01d-d6f2-45a515ea9377"
+  },
+  "effectiveDateTime": "2021-06-16T10:41:03-03:00",
+  "issued": "2021-06-16T10:41:03.782-03:00",
+  "valueQuantity": {
+    "value": 7.7845,
+    "unit": "10*3/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*3/uL"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-012__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Cladosporium herbarum IgE Ab [Units/volume] in Serum: 0.070654 kU/L. Status: final. Date: 2022-01-12.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2d907238-0445-33f3-8a04-6e81af7ef30d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6075-6",
+        "display": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+      }
+    ],
+    "text": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+  },
+  "subject": {
+    "reference": "Patient/2d907238-0445-33f3-8535-a61d8a79ac85"
+  },
+  "encounter": {
+    "reference": "Encounter/2d907238-0445-33f3-5681-5d26cf54ef5c"
+  },
+  "effectiveDateTime": "2022-01-12T03:42:02-03:00",
+  "issued": "2022-01-12T03:42:02.145-03:00",
+  "valueQuantity": {
+    "value": 0.070654,
+    "unit": "kU/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "kU/L"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-012__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Cladosporium herbarum IgE Ab [Units/volume] in Serum; Result=0.070654 kU/L; Category=Laboratory; Status=final; Date=2022-01-12
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2d907238-0445-33f3-8a04-6e81af7ef30d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6075-6",
+        "display": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+      }
+    ],
+    "text": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+  },
+  "subject": {
+    "reference": "Patient/2d907238-0445-33f3-8535-a61d8a79ac85"
+  },
+  "encounter": {
+    "reference": "Encounter/2d907238-0445-33f3-5681-5d26cf54ef5c"
+  },
+  "effectiveDateTime": "2022-01-12T03:42:02-03:00",
+  "issued": "2022-01-12T03:42:02.145-03:00",
+  "valueQuantity": {
+    "value": 0.070654,
+    "unit": "kU/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "kU/L"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-012__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Cladosporium herbarum IgE Ab [Units/volume] in Serum 0.070654 kU/L on 2022-01-12, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2d907238-0445-33f3-8a04-6e81af7ef30d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6075-6",
+        "display": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+      }
+    ],
+    "text": "Cladosporium herbarum IgE Ab [Units/volume] in Serum"
+  },
+  "subject": {
+    "reference": "Patient/2d907238-0445-33f3-8535-a61d8a79ac85"
+  },
+  "encounter": {
+    "reference": "Encounter/2d907238-0445-33f3-5681-5d26cf54ef5c"
+  },
+  "effectiveDateTime": "2022-01-12T03:42:02-03:00",
+  "issued": "2022-01-12T03:42:02.145-03:00",
+  "valueQuantity": {
+    "value": 0.070654,
+    "unit": "kU/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "kU/L"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-013__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Potassium [Moles/volume] in Serum or Plasma: 4.8 mmol/L. Status: final. Date: 2021-01-28.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "d0bac5a3-7864-f695-6f7c-8104c0bdf2f8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/d0bac5a3-7864-f695-1810-177ed19dedf7"
+  },
+  "encounter": {
+    "reference": "Encounter/d0bac5a3-7864-f695-46a2-0b8eaa3cdbe2"
+  },
+  "effectiveDateTime": "2021-01-28T23:07:28-03:00",
+  "issued": "2021-01-28T23:07:28.623-03:00",
+  "valueQuantity": {
+    "value": 4.8,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-013__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Potassium [Moles/volume] in Serum or Plasma; Result=4.8 mmol/L; Category=Laboratory; Status=final; Date=2021-01-28
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "d0bac5a3-7864-f695-6f7c-8104c0bdf2f8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/d0bac5a3-7864-f695-1810-177ed19dedf7"
+  },
+  "encounter": {
+    "reference": "Encounter/d0bac5a3-7864-f695-46a2-0b8eaa3cdbe2"
+  },
+  "effectiveDateTime": "2021-01-28T23:07:28-03:00",
+  "issued": "2021-01-28T23:07:28.623-03:00",
+  "valueQuantity": {
+    "value": 4.8,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-013__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Potassium [Moles/volume] in Serum or Plasma 4.8 mmol/L on 2021-01-28, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "d0bac5a3-7864-f695-6f7c-8104c0bdf2f8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2823-3",
+        "display": "Potassium [Moles/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Potassium [Moles/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/d0bac5a3-7864-f695-1810-177ed19dedf7"
+  },
+  "encounter": {
+    "reference": "Encounter/d0bac5a3-7864-f695-46a2-0b8eaa3cdbe2"
+  },
+  "effectiveDateTime": "2021-01-28T23:07:28-03:00",
+  "issued": "2021-01-28T23:07:28.623-03:00",
+  "valueQuantity": {
+    "value": 4.8,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-014__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Creatinine [Mass/volume] in Serum or Plasma: 2.3846 mg/dL. Status: final. Date: 2019-06-24.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-e95c-334efa477a3b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Creatinine [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-2120-f96e20dddf69"
+  },
+  "effectiveDateTime": "2019-06-24T06:14:43-03:00",
+  "issued": "2019-06-24T06:14:43.603-03:00",
+  "valueQuantity": {
+    "value": 2.3846,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-014__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Creatinine [Mass/volume] in Serum or Plasma; Result=2.3846 mg/dL; Category=Laboratory; Status=final; Date=2019-06-24
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-e95c-334efa477a3b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Creatinine [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-2120-f96e20dddf69"
+  },
+  "effectiveDateTime": "2019-06-24T06:14:43-03:00",
+  "issued": "2019-06-24T06:14:43.603-03:00",
+  "valueQuantity": {
+    "value": 2.3846,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-014__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Creatinine [Mass/volume] in Serum or Plasma 2.3846 mg/dL on 2019-06-24, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "e8f7e38f-3a74-5f81-e95c-334efa477a3b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2160-0",
+        "display": "Creatinine [Mass/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Creatinine [Mass/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/e8f7e38f-3a74-5f81-6077-3113fe05adce"
+  },
+  "encounter": {
+    "reference": "Encounter/e8f7e38f-3a74-5f81-2120-f96e20dddf69"
+  },
+  "effectiveDateTime": "2019-06-24T06:14:43-03:00",
+  "issued": "2019-06-24T06:14:43.603-03:00",
+  "valueQuantity": {
+    "value": 2.3846,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}

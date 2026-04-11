@@ -3,8 +3,9 @@ PROFILE_SCRIPT := scripts/fhir_pool_profiler.py
 PILOT_SCRIPT := scripts/select_synthea_pilot50.py
 PAIR_SCRIPT := scripts/generate_synthea_pilot50_pairs.py
 REVIEWER_SCRIPT := scripts/package_ai_reviewer_requests.py
+BATCH_SCRIPT := scripts/build_reviewer_batches.py
 
-.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50 generate-pilot50-pairs package-ai-reviewers
+.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50 generate-pilot50-pairs package-ai-reviewers build-review-batches
 
 profile-large:
 	$(PYTHON) $(PROFILE_SCRIPT) profile-large --output-dir outputs/large
@@ -26,3 +27,6 @@ generate-pilot50-pairs:
 
 package-ai-reviewers:
 	$(PYTHON) $(REVIEWER_SCRIPT) --output-dir outputs/large
+
+build-review-batches:
+	$(PYTHON) $(BATCH_SCRIPT) --output-dir outputs/large

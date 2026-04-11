@@ -1,0 +1,587 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-observation-031__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Erythrocytes [#/volume] in Blood by Automated count 4.8675 10*6/uL on 2018-08-24, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "5b7ba730-e1bf-3e44-09c8-b9f121da1e98",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "789-8",
+        "display": "Erythrocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Erythrocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/5b7ba730-e1bf-3e44-24c6-d17005110988"
+  },
+  "encounter": {
+    "reference": "Encounter/5b7ba730-e1bf-3e44-2383-c1074d31827f"
+  },
+  "effectiveDateTime": "2018-08-24T09:06:20-03:00",
+  "issued": "2018-08-24T09:06:20.085-03:00",
+  "valueQuantity": {
+    "value": 4.8675,
+    "unit": "10*6/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*6/uL"
+  }
+}
+
+
+ITEM 2
+pair_id: pilot50-observation-032__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Body mass index (BMI) [Ratio]: 18.47 kg/m2. Status: final. Date: 2020-02-21.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "7fa97887-ba58-92ad-0300-f4b5cd36fc81",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-bmi"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "39156-5",
+        "display": "Body mass index (BMI) [Ratio]"
+      }
+    ],
+    "text": "Body mass index (BMI) [Ratio]"
+  },
+  "subject": {
+    "reference": "Patient/7fa97887-ba58-92ad-4ced-c1293d9af949"
+  },
+  "encounter": {
+    "reference": "Encounter/7fa97887-ba58-92ad-8e74-9fbc1610f5fc"
+  },
+  "effectiveDateTime": "2020-02-21T11:24:35-03:00",
+  "issued": "2020-02-21T11:24:35.924-03:00",
+  "valueQuantity": {
+    "value": 18.47,
+    "unit": "kg/m2",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg/m2"
+  }
+}
+
+
+ITEM 3
+pair_id: pilot50-observation-032__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Body mass index (BMI) [Ratio]; Result=18.47 kg/m2; Category=Vital signs; Status=final; Date=2020-02-21
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "7fa97887-ba58-92ad-0300-f4b5cd36fc81",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-bmi"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "39156-5",
+        "display": "Body mass index (BMI) [Ratio]"
+      }
+    ],
+    "text": "Body mass index (BMI) [Ratio]"
+  },
+  "subject": {
+    "reference": "Patient/7fa97887-ba58-92ad-4ced-c1293d9af949"
+  },
+  "encounter": {
+    "reference": "Encounter/7fa97887-ba58-92ad-8e74-9fbc1610f5fc"
+  },
+  "effectiveDateTime": "2020-02-21T11:24:35-03:00",
+  "issued": "2020-02-21T11:24:35.924-03:00",
+  "valueQuantity": {
+    "value": 18.47,
+    "unit": "kg/m2",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg/m2"
+  }
+}
+
+
+ITEM 4
+pair_id: pilot50-observation-032__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Body mass index (BMI) [Ratio] 18.47 kg/m2 on 2020-02-21, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "7fa97887-ba58-92ad-0300-f4b5cd36fc81",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-bmi"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "39156-5",
+        "display": "Body mass index (BMI) [Ratio]"
+      }
+    ],
+    "text": "Body mass index (BMI) [Ratio]"
+  },
+  "subject": {
+    "reference": "Patient/7fa97887-ba58-92ad-4ced-c1293d9af949"
+  },
+  "encounter": {
+    "reference": "Encounter/7fa97887-ba58-92ad-8e74-9fbc1610f5fc"
+  },
+  "effectiveDateTime": "2020-02-21T11:24:35-03:00",
+  "issued": "2020-02-21T11:24:35.924-03:00",
+  "valueQuantity": {
+    "value": 18.47,
+    "unit": "kg/m2",
+    "system": "http://unitsofmeasure.org",
+    "code": "kg/m2"
+  }
+}
+
+
+ITEM 5
+pair_id: pilot50-observation-033__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Ketones [Mass/volume] in Urine by Test strip: 4.9343 mg/dL. Status: final. Date: 1999-07-30.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "570e8056-1968-636d-b414-4778aa71fcab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5797-6",
+        "display": "Ketones [Mass/volume] in Urine by Test strip"
+      }
+    ],
+    "text": "Ketones [Mass/volume] in Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/570e8056-1968-636d-4b15-ead025097e50"
+  },
+  "encounter": {
+    "reference": "Encounter/570e8056-1968-636d-605a-17bb2d4b67ae"
+  },
+  "effectiveDateTime": "1999-07-30T05:01:08-03:00",
+  "issued": "1999-07-30T05:01:08.612-03:00",
+  "valueQuantity": {
+    "value": 4.9343,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 6
+pair_id: pilot50-observation-033__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Ketones [Mass/volume] in Urine by Test strip; Result=4.9343 mg/dL; Category=Laboratory; Status=final; Date=1999-07-30
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "570e8056-1968-636d-b414-4778aa71fcab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5797-6",
+        "display": "Ketones [Mass/volume] in Urine by Test strip"
+      }
+    ],
+    "text": "Ketones [Mass/volume] in Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/570e8056-1968-636d-4b15-ead025097e50"
+  },
+  "encounter": {
+    "reference": "Encounter/570e8056-1968-636d-605a-17bb2d4b67ae"
+  },
+  "effectiveDateTime": "1999-07-30T05:01:08-03:00",
+  "issued": "1999-07-30T05:01:08.612-03:00",
+  "valueQuantity": {
+    "value": 4.9343,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 7
+pair_id: pilot50-observation-033__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Ketones [Mass/volume] in Urine by Test strip 4.9343 mg/dL on 1999-07-30, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "570e8056-1968-636d-b414-4778aa71fcab",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "5797-6",
+        "display": "Ketones [Mass/volume] in Urine by Test strip"
+      }
+    ],
+    "text": "Ketones [Mass/volume] in Urine by Test strip"
+  },
+  "subject": {
+    "reference": "Patient/570e8056-1968-636d-4b15-ead025097e50"
+  },
+  "encounter": {
+    "reference": "Encounter/570e8056-1968-636d-605a-17bb2d4b67ae"
+  },
+  "effectiveDateTime": "1999-07-30T05:01:08-03:00",
+  "issued": "1999-07-30T05:01:08.612-03:00",
+  "valueQuantity": {
+    "value": 4.9343,
+    "unit": "mg/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "mg/dL"
+  }
+}
+
+
+ITEM 8
+pair_id: pilot50-observation-034__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Sodium [Moles/volume] in Blood: 142.35 mmol/L. Status: final. Date: 2022-11-07.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "fea2c513-da7d-c262-4294-700f2dffb894",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2947-0",
+        "display": "Sodium [Moles/volume] in Blood"
+      }
+    ],
+    "text": "Sodium [Moles/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/f1082bd8-37e8-bb3c-2743-85af18b112a1"
+  },
+  "encounter": {
+    "reference": "Encounter/d69225b2-fbd7-c752-d226-7b3dcdc75e12"
+  },
+  "effectiveDateTime": "2022-11-07T02:06:45-05:00",
+  "issued": "2022-11-07T02:06:45.921-05:00",
+  "valueQuantity": {
+    "value": 142.35,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-034__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Sodium [Moles/volume] in Blood; Result=142.35 mmol/L; Category=Laboratory; Status=final; Date=2022-11-07
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "fea2c513-da7d-c262-4294-700f2dffb894",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2947-0",
+        "display": "Sodium [Moles/volume] in Blood"
+      }
+    ],
+    "text": "Sodium [Moles/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/f1082bd8-37e8-bb3c-2743-85af18b112a1"
+  },
+  "encounter": {
+    "reference": "Encounter/d69225b2-fbd7-c752-d226-7b3dcdc75e12"
+  },
+  "effectiveDateTime": "2022-11-07T02:06:45-05:00",
+  "issued": "2022-11-07T02:06:45.921-05:00",
+  "valueQuantity": {
+    "value": 142.35,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-034__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Sodium [Moles/volume] in Blood 142.35 mmol/L on 2022-11-07, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "fea2c513-da7d-c262-4294-700f2dffb894",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "2947-0",
+        "display": "Sodium [Moles/volume] in Blood"
+      }
+    ],
+    "text": "Sodium [Moles/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/f1082bd8-37e8-bb3c-2743-85af18b112a1"
+  },
+  "encounter": {
+    "reference": "Encounter/d69225b2-fbd7-c752-d226-7b3dcdc75e12"
+  },
+  "effectiveDateTime": "2022-11-07T02:06:45-05:00",
+  "issued": "2022-11-07T02:06:45.921-05:00",
+  "valueQuantity": {
+    "value": 142.35,
+    "unit": "mmol/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "mmol/L"
+  }
+}

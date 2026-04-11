@@ -1,0 +1,660 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: pilot50-condition-008__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Prediabetes; ClinicalStatus=active; Verification=confirmed; Onset=1997-02-21; Recorded=1997-02-21
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "095dd3d9-8eb6-e786-d7f9-686ea6fec31c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "714628002",
+        "display": "Prediabetes (finding)"
+      }
+    ],
+    "text": "Prediabetes (finding)"
+  },
+  "subject": {
+    "reference": "Patient/095dd3d9-8eb6-e786-8bfe-4e37c593e014"
+  },
+  "encounter": {
+    "reference": "Encounter/095dd3d9-8eb6-e786-3d2e-b91f71f4d474"
+  },
+  "onsetDateTime": "1997-02-21T18:41:59-03:00",
+  "recordedDate": "1997-02-21T18:41:59-03:00"
+}
+
+
+ITEM 2
+pair_id: pilot50-condition-008__patient_utterance
+resource_type: Condition
+input_style: patient_utterance
+input_text:
+I have prediabetes. It was noted on 1997-02-21.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "095dd3d9-8eb6-e786-d7f9-686ea6fec31c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "714628002",
+        "display": "Prediabetes (finding)"
+      }
+    ],
+    "text": "Prediabetes (finding)"
+  },
+  "subject": {
+    "reference": "Patient/095dd3d9-8eb6-e786-8bfe-4e37c593e014"
+  },
+  "encounter": {
+    "reference": "Encounter/095dd3d9-8eb6-e786-3d2e-b91f71f4d474"
+  },
+  "onsetDateTime": "1997-02-21T18:41:59-03:00",
+  "recordedDate": "1997-02-21T18:41:59-03:00"
+}
+
+
+ITEM 3
+pair_id: pilot50-condition-009__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Fracture subluxation of wrist. Clinical status: resolved. Verification: confirmed. Onset: 2016-08-06. Abatement: 2016-10-23. Recorded: 2016-08-06.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "00f9e3dc-c68e-7a7d-d3bb-4a79d77acb36",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "263102004",
+        "display": "Fracture subluxation of wrist (disorder)"
+      }
+    ],
+    "text": "Fracture subluxation of wrist (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/00f9e3dc-c68e-7a7d-1915-8de466a2f70f"
+  },
+  "encounter": {
+    "reference": "Encounter/00f9e3dc-c68e-7a7d-3906-38c0ba1c377e"
+  },
+  "onsetDateTime": "2016-08-06T03:04:55-03:00",
+  "abatementDateTime": "2016-10-23T03:27:58-03:00",
+  "recordedDate": "2016-08-06T03:04:55-03:00"
+}
+
+
+ITEM 4
+pair_id: pilot50-condition-009__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Fracture subluxation of wrist; ClinicalStatus=resolved; Verification=confirmed; Onset=2016-08-06; Abatement=2016-10-23; Recorded=2016-08-06
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "00f9e3dc-c68e-7a7d-d3bb-4a79d77acb36",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "263102004",
+        "display": "Fracture subluxation of wrist (disorder)"
+      }
+    ],
+    "text": "Fracture subluxation of wrist (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/00f9e3dc-c68e-7a7d-1915-8de466a2f70f"
+  },
+  "encounter": {
+    "reference": "Encounter/00f9e3dc-c68e-7a7d-3906-38c0ba1c377e"
+  },
+  "onsetDateTime": "2016-08-06T03:04:55-03:00",
+  "abatementDateTime": "2016-10-23T03:27:58-03:00",
+  "recordedDate": "2016-08-06T03:04:55-03:00"
+}
+
+
+ITEM 5
+pair_id: pilot50-condition-009__patient_utterance
+resource_type: Condition
+input_style: patient_utterance
+input_text:
+I had fracture subluxation of wrist. It was noted on 2016-08-06. It had resolved by 2016-10-23.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "00f9e3dc-c68e-7a7d-d3bb-4a79d77acb36",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "263102004",
+        "display": "Fracture subluxation of wrist (disorder)"
+      }
+    ],
+    "text": "Fracture subluxation of wrist (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/00f9e3dc-c68e-7a7d-1915-8de466a2f70f"
+  },
+  "encounter": {
+    "reference": "Encounter/00f9e3dc-c68e-7a7d-3906-38c0ba1c377e"
+  },
+  "onsetDateTime": "2016-08-06T03:04:55-03:00",
+  "abatementDateTime": "2016-10-23T03:27:58-03:00",
+  "recordedDate": "2016-08-06T03:04:55-03:00"
+}
+
+
+ITEM 6
+pair_id: pilot50-condition-010__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Chronic sinusitis. Clinical status: active. Verification: confirmed. Onset: 2018-11-15. Recorded: 2018-11-15.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "08056bc1-b178-1d21-6eda-44840fd1882b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "40055000",
+        "display": "Chronic sinusitis (disorder)"
+      }
+    ],
+    "text": "Chronic sinusitis (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/08056bc1-b178-1d21-c3de-0e659df18a34"
+  },
+  "encounter": {
+    "reference": "Encounter/08056bc1-b178-1d21-032d-1ae8460b7185"
+  },
+  "onsetDateTime": "2018-11-15T03:23:03-03:00",
+  "recordedDate": "2018-11-15T03:23:03-03:00"
+}
+
+
+ITEM 7
+pair_id: pilot50-condition-010__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Chronic sinusitis; ClinicalStatus=active; Verification=confirmed; Onset=2018-11-15; Recorded=2018-11-15
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "08056bc1-b178-1d21-6eda-44840fd1882b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "40055000",
+        "display": "Chronic sinusitis (disorder)"
+      }
+    ],
+    "text": "Chronic sinusitis (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/08056bc1-b178-1d21-c3de-0e659df18a34"
+  },
+  "encounter": {
+    "reference": "Encounter/08056bc1-b178-1d21-032d-1ae8460b7185"
+  },
+  "onsetDateTime": "2018-11-15T03:23:03-03:00",
+  "recordedDate": "2018-11-15T03:23:03-03:00"
+}
+
+
+ITEM 8
+pair_id: pilot50-condition-010__patient_utterance
+resource_type: Condition
+input_style: patient_utterance
+input_text:
+I have chronic sinusitis. It was noted on 2018-11-15.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "08056bc1-b178-1d21-6eda-44840fd1882b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "active"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "40055000",
+        "display": "Chronic sinusitis (disorder)"
+      }
+    ],
+    "text": "Chronic sinusitis (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/08056bc1-b178-1d21-c3de-0e659df18a34"
+  },
+  "encounter": {
+    "reference": "Encounter/08056bc1-b178-1d21-032d-1ae8460b7185"
+  },
+  "onsetDateTime": "2018-11-15T03:23:03-03:00",
+  "recordedDate": "2018-11-15T03:23:03-03:00"
+}
+
+
+ITEM 9
+pair_id: pilot50-observation-001__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma: 129.36 U/L. Status: final. Date: 2022-03-30.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "98758d75-d95a-39ca-eace-53571ec75f19",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/98758d75-d95a-39ca-cac0-06ad37370e23"
+  },
+  "encounter": {
+    "reference": "Encounter/98758d75-d95a-39ca-25c1-e80fcf071c3f"
+  },
+  "effectiveDateTime": "2022-03-30T03:59:28-03:00",
+  "issued": "2022-03-30T03:59:28.325-03:00",
+  "valueQuantity": {
+    "value": 129.36,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}
+
+
+ITEM 10
+pair_id: pilot50-observation-001__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma; Result=129.36 U/L; Category=Laboratory; Status=final; Date=2022-03-30
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "98758d75-d95a-39ca-eace-53571ec75f19",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "6768-6",
+        "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+      }
+    ],
+    "text": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+  },
+  "subject": {
+    "reference": "Patient/98758d75-d95a-39ca-cac0-06ad37370e23"
+  },
+  "encounter": {
+    "reference": "Encounter/98758d75-d95a-39ca-25c1-e80fcf071c3f"
+  },
+  "effectiveDateTime": "2022-03-30T03:59:28-03:00",
+  "issued": "2022-03-30T03:59:28.325-03:00",
+  "valueQuantity": {
+    "value": 129.36,
+    "unit": "U/L",
+    "system": "http://unitsofmeasure.org",
+    "code": "U/L"
+  }
+}

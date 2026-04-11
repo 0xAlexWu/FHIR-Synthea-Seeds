@@ -77,6 +77,18 @@ Equivalent `make` target:
 make package-ai-reviewers
 ```
 
+Convert the single-pair reviewer requests into 10-item batch prompts:
+
+```bash
+python3 scripts/build_reviewer_batches.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make build-review-batches
+```
+
 If you prefer to run the upstream generator yourself first, this remains
 supported too:
 
@@ -120,6 +132,13 @@ The AI-review packaging step writes:
 - `ai_reviewer_requests.csv`
 - `ai_reviewer_results_template.csv`
 - `ai_review_batching_summary.md`
+
+The batch-review packaging step writes:
+
+- `reviewer_batch_prompts/review_batch_001.txt` and subsequent batch files
+- `reviewer_batch_index.csv`
+- `reviewer_batch_manifest.jsonl`
+- `reviewer_batching_notes.md`
 
 For GitHub-friendly publication, the compressed `candidate_seed_catalog.csv.gz`
 is intended to be checked in, while the raw `candidate_seed_catalog.csv` can stay
