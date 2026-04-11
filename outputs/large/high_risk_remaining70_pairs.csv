@@ -1,0 +1,27 @@
+pair_id,seed_id,resource_type,input_style,high_risk_reason
+remaining70-condition-001__concise_clinical,Condition/0198253c-bf42-92b7-b12f-7c65dae14661,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-001__semi_structured,Condition/0198253c-bf42-92b7-b12f-7c65dae14661,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-002__concise_clinical,Condition/0717af9f-b696-e28a-b9b3-d88a0b814ce8,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-002__semi_structured,Condition/0717af9f-b696-e28a-b9b3-d88a0b814ce8,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-003__concise_clinical,Condition/035d096b-ec8a-645f-99a0-4a6f05ee77d3,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-003__semi_structured,Condition/035d096b-ec8a-645f-99a0-4a6f05ee77d3,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-004__concise_clinical,Condition/0428f881-9937-bf73-6717-d1426af738b8,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-004__semi_structured,Condition/0428f881-9937-bf73-6717-d1426af738b8,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-005__concise_clinical,Condition/062795d2-78aa-8b2a-7854-f3ce4982f86e,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-005__semi_structured,Condition/062795d2-78aa-8b2a-7854-f3ce4982f86e,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-006__concise_clinical,Condition/05256571-4570-c9e5-4cab-e3cf3c20f289,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-006__semi_structured,Condition/05256571-4570-c9e5-4cab-e3cf3c20f289,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-007__concise_clinical,Condition/095dd3d9-8eb6-e786-0fcd-ab35b43513f8,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-007__semi_structured,Condition/095dd3d9-8eb6-e786-0fcd-ab35b43513f8,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-008__concise_clinical,Condition/0a84f58e-5ab1-0069-4246-3c461345a36f,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-008__semi_structured,Condition/0a84f58e-5ab1-0069-4246-3c461345a36f,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-009__concise_clinical,Condition/00f9e3dc-c68e-7a7d-532f-969da84aa711,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-009__semi_structured,Condition/00f9e3dc-c68e-7a7d-532f-969da84aa711,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-condition-010__concise_clinical,Condition/08056bc1-b178-1d21-d6c2-daa23753202b,Condition,concise_clinical,Condition pair prioritised for early review.
+remaining70-condition-010__semi_structured,Condition/08056bc1-b178-1d21-d6c2-daa23753202b,Condition,semi_structured,Condition pair prioritised for early review.
+remaining70-patient-001__concise_clinical,Patient/07066faf-a4af-97d3-0780-89e015322ec5,Patient,concise_clinical,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)
+remaining70-patient-001__semi_structured,Patient/07066faf-a4af-97d3-0780-89e015322ec5,Patient,semi_structured,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)
+remaining70-patient-002__concise_clinical,Patient/095dd3d9-8eb6-e786-8bfe-4e37c593e014,Patient,concise_clinical,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)
+remaining70-patient-002__semi_structured,Patient/095dd3d9-8eb6-e786-8bfe-4e37c593e014,Patient,semi_structured,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)
+remaining70-patient-003__concise_clinical,Patient/01867dda-3c09-6717-00e7-92fa7be373b3,Patient,concise_clinical,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)
+remaining70-patient-003__semi_structured,Patient/01867dda-3c09-6717-00e7-92fa7be373b3,Patient,semi_structured,Patient target includes deceasedDateTime. ; Flagged during pair generation: deceased_status_risk (Patient seed includes deceased status; confirm every generated variant preserves the clinically important deceased signal from the target JSON.)

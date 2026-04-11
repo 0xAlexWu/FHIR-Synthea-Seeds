@@ -1,0 +1,683 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: remaining70-condition-001__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Social isolation. Clinical status: resolved. Verification: confirmed. Onset: 2016-12-27. Abatement: 2017-06-27. Recorded: 2016-12-27.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0198253c-bf42-92b7-b12f-7c65dae14661",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "422650009",
+        "display": "Social isolation (finding)"
+      }
+    ],
+    "text": "Social isolation (finding)"
+  },
+  "subject": {
+    "reference": "Patient/0198253c-bf42-92b7-1838-a4ee9aba3ae8"
+  },
+  "encounter": {
+    "reference": "Encounter/0198253c-bf42-92b7-f7e4-64c818b9585c"
+  },
+  "onsetDateTime": "2016-12-27T22:18:12-03:00",
+  "abatementDateTime": "2017-06-27T22:05:52-03:00",
+  "recordedDate": "2016-12-27T22:18:12-03:00"
+}
+
+
+ITEM 2
+pair_id: remaining70-condition-001__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Social isolation; ClinicalStatus=resolved; Verification=confirmed; Onset=2016-12-27; Abatement=2017-06-27; Recorded=2016-12-27
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0198253c-bf42-92b7-b12f-7c65dae14661",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "422650009",
+        "display": "Social isolation (finding)"
+      }
+    ],
+    "text": "Social isolation (finding)"
+  },
+  "subject": {
+    "reference": "Patient/0198253c-bf42-92b7-1838-a4ee9aba3ae8"
+  },
+  "encounter": {
+    "reference": "Encounter/0198253c-bf42-92b7-f7e4-64c818b9585c"
+  },
+  "onsetDateTime": "2016-12-27T22:18:12-03:00",
+  "abatementDateTime": "2017-06-27T22:05:52-03:00",
+  "recordedDate": "2016-12-27T22:18:12-03:00"
+}
+
+
+ITEM 3
+pair_id: remaining70-condition-002__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Stress. Clinical status: resolved. Verification: confirmed. Onset: 2014-11-27. Abatement: 2015-01-08. Recorded: 2014-11-27.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0717af9f-b696-e28a-b9b3-d88a0b814ce8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73595000",
+        "display": "Stress (finding)"
+      }
+    ],
+    "text": "Stress (finding)"
+  },
+  "subject": {
+    "reference": "Patient/0717af9f-b696-e28a-a788-9c47fdc847c1"
+  },
+  "encounter": {
+    "reference": "Encounter/0717af9f-b696-e28a-e900-7bc192d66261"
+  },
+  "onsetDateTime": "2014-11-27T19:58:56-03:00",
+  "abatementDateTime": "2015-01-08T20:11:34-03:00",
+  "recordedDate": "2014-11-27T19:58:56-03:00"
+}
+
+
+ITEM 4
+pair_id: remaining70-condition-002__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Stress; ClinicalStatus=resolved; Verification=confirmed; Onset=2014-11-27; Abatement=2015-01-08; Recorded=2014-11-27
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0717af9f-b696-e28a-b9b3-d88a0b814ce8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "73595000",
+        "display": "Stress (finding)"
+      }
+    ],
+    "text": "Stress (finding)"
+  },
+  "subject": {
+    "reference": "Patient/0717af9f-b696-e28a-a788-9c47fdc847c1"
+  },
+  "encounter": {
+    "reference": "Encounter/0717af9f-b696-e28a-e900-7bc192d66261"
+  },
+  "onsetDateTime": "2014-11-27T19:58:56-03:00",
+  "abatementDateTime": "2015-01-08T20:11:34-03:00",
+  "recordedDate": "2014-11-27T19:58:56-03:00"
+}
+
+
+ITEM 5
+pair_id: remaining70-condition-003__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Victim of intimate partner abuse. Clinical status: resolved. Verification: confirmed. Onset: 2014-02-06. Abatement: 2015-02-12. Recorded: 2014-02-06.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "035d096b-ec8a-645f-99a0-4a6f05ee77d3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "706893006",
+        "display": "Victim of intimate partner abuse (finding)"
+      }
+    ],
+    "text": "Victim of intimate partner abuse (finding)"
+  },
+  "subject": {
+    "reference": "Patient/035d096b-ec8a-645f-2424-4b9dd739e43a"
+  },
+  "encounter": {
+    "reference": "Encounter/035d096b-ec8a-645f-3a3b-580c1d0799b1"
+  },
+  "onsetDateTime": "2014-02-06T08:03:33-03:00",
+  "abatementDateTime": "2015-02-12T08:15:06-03:00",
+  "recordedDate": "2014-02-06T08:03:33-03:00"
+}
+
+
+ITEM 6
+pair_id: remaining70-condition-003__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Victim of intimate partner abuse; ClinicalStatus=resolved; Verification=confirmed; Onset=2014-02-06; Abatement=2015-02-12; Recorded=2014-02-06
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "035d096b-ec8a-645f-99a0-4a6f05ee77d3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "706893006",
+        "display": "Victim of intimate partner abuse (finding)"
+      }
+    ],
+    "text": "Victim of intimate partner abuse (finding)"
+  },
+  "subject": {
+    "reference": "Patient/035d096b-ec8a-645f-2424-4b9dd739e43a"
+  },
+  "encounter": {
+    "reference": "Encounter/035d096b-ec8a-645f-3a3b-580c1d0799b1"
+  },
+  "onsetDateTime": "2014-02-06T08:03:33-03:00",
+  "abatementDateTime": "2015-02-12T08:15:06-03:00",
+  "recordedDate": "2014-02-06T08:03:33-03:00"
+}
+
+
+ITEM 7
+pair_id: remaining70-condition-004__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Polyp of colon. Clinical status: resolved. Verification: confirmed. Onset: 2015-01-21. Abatement: 2016-05-04. Recorded: 2015-01-21.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0428f881-9937-bf73-6717-d1426af738b8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "68496003",
+        "display": "Polyp of colon (disorder)"
+      }
+    ],
+    "text": "Polyp of colon (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/0428f881-9937-bf73-ce4b-3743d04591d7"
+  },
+  "encounter": {
+    "reference": "Encounter/0428f881-9937-bf73-b9bb-e528a9dbebf3"
+  },
+  "onsetDateTime": "2015-01-21T08:29:21-03:00",
+  "abatementDateTime": "2016-05-04T09:10:19-03:00",
+  "recordedDate": "2015-01-21T08:29:21-03:00"
+}
+
+
+ITEM 8
+pair_id: remaining70-condition-004__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Polyp of colon; ClinicalStatus=resolved; Verification=confirmed; Onset=2015-01-21; Abatement=2016-05-04; Recorded=2015-01-21
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "0428f881-9937-bf73-6717-d1426af738b8",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "68496003",
+        "display": "Polyp of colon (disorder)"
+      }
+    ],
+    "text": "Polyp of colon (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/0428f881-9937-bf73-ce4b-3743d04591d7"
+  },
+  "encounter": {
+    "reference": "Encounter/0428f881-9937-bf73-b9bb-e528a9dbebf3"
+  },
+  "onsetDateTime": "2015-01-21T08:29:21-03:00",
+  "abatementDateTime": "2016-05-04T09:10:19-03:00",
+  "recordedDate": "2015-01-21T08:29:21-03:00"
+}
+
+
+ITEM 9
+pair_id: remaining70-condition-005__concise_clinical
+resource_type: Condition
+input_style: concise_clinical
+input_text:
+Condition: Acute viral pharyngitis. Clinical status: resolved. Verification: confirmed. Onset: 2015-08-30. Abatement: 2015-09-12. Recorded: 2015-08-30.
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "062795d2-78aa-8b2a-7854-f3ce4982f86e",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195662009",
+        "display": "Acute viral pharyngitis (disorder)"
+      }
+    ],
+    "text": "Acute viral pharyngitis (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/062795d2-78aa-8b2a-1b43-dee107c305af"
+  },
+  "encounter": {
+    "reference": "Encounter/062795d2-78aa-8b2a-0119-c3d2016a51a9"
+  },
+  "onsetDateTime": "2015-08-30T10:48:44-03:00",
+  "abatementDateTime": "2015-09-12T21:48:44-03:00",
+  "recordedDate": "2015-08-30T10:48:44-03:00"
+}
+
+
+ITEM 10
+pair_id: remaining70-condition-005__semi_structured
+resource_type: Condition
+input_style: semi_structured
+input_text:
+Condition=Acute viral pharyngitis; ClinicalStatus=resolved; Verification=confirmed; Onset=2015-08-30; Abatement=2015-09-12; Recorded=2015-08-30
+target_fhir_json:
+{
+  "resourceType": "Condition",
+  "id": "062795d2-78aa-8b2a-7854-f3ce4982f86e",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition-encounter-diagnosis"
+    ]
+  },
+  "clinicalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+        "code": "resolved"
+      }
+    ]
+  },
+  "verificationStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+        "code": "confirmed"
+      }
+    ]
+  },
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+          "code": "encounter-diagnosis",
+          "display": "Encounter Diagnosis"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "195662009",
+        "display": "Acute viral pharyngitis (disorder)"
+      }
+    ],
+    "text": "Acute viral pharyngitis (disorder)"
+  },
+  "subject": {
+    "reference": "Patient/062795d2-78aa-8b2a-1b43-dee107c305af"
+  },
+  "encounter": {
+    "reference": "Encounter/062795d2-78aa-8b2a-0119-c3d2016a51a9"
+  },
+  "onsetDateTime": "2015-08-30T10:48:44-03:00",
+  "abatementDateTime": "2015-09-12T21:48:44-03:00",
+  "recordedDate": "2015-08-30T10:48:44-03:00"
+}

@@ -113,6 +113,27 @@ Equivalent `make` target:
 make build-review-batches
 ```
 
+Package the remaining-70 pair candidates into continued reviewer batches starting
+after the existing pilot files:
+
+```bash
+python3 scripts/build_reviewer_batches.py \
+  --pairs-file outputs/large/synthea_remaining70_pair_candidates.jsonl \
+  --flags-file outputs/large/synthea_remaining70_pair_review_flags.csv \
+  --output-dir outputs/large \
+  --continue-numbering \
+  --index-name reviewer_batch_index_remaining70.csv \
+  --manifest-name reviewer_batch_manifest_remaining70.jsonl \
+  --notes-name reviewer_batching_notes_remaining70.md \
+  --high-risk-name high_risk_remaining70_pairs.csv
+```
+
+Equivalent `make` target:
+
+```bash
+make build-review-batches-remaining70
+```
+
 If you prefer to run the upstream generator yourself first, this remains
 supported too:
 
@@ -176,6 +197,14 @@ The batch-review packaging step writes:
 - `reviewer_batch_index.csv`
 - `reviewer_batch_manifest.jsonl`
 - `reviewer_batching_notes.md`
+
+The remaining-70 continued batch step writes:
+
+- `reviewer_batch_prompts/review_batch_016.txt` and subsequent new batch files
+- `reviewer_batch_index_remaining70.csv`
+- `reviewer_batch_manifest_remaining70.jsonl`
+- `reviewer_batching_notes_remaining70.md`
+- `high_risk_remaining70_pairs.csv`
 
 For GitHub-friendly publication, the compressed `candidate_seed_catalog.csv.gz`
 is intended to be checked in, while the raw `candidate_seed_catalog.csv` can stay

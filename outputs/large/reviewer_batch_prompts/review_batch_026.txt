@@ -1,0 +1,589 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: remaining70-observation-027__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ] 1 {score} on 2020-06-19, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "09e96014-f348-42fa-a977-cca51b39a0e3",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "70274-6",
+        "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+      }
+    ],
+    "text": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+  },
+  "subject": {
+    "reference": "Patient/09e96014-f348-42fa-9d71-a17138381529"
+  },
+  "encounter": {
+    "reference": "Encounter/09e96014-f348-42fa-a160-8bade6053b22"
+  },
+  "effectiveDateTime": "2020-06-19T16:45:08-03:00",
+  "issued": "2020-06-19T16:45:08.880-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 2
+pair_id: remaining70-observation-028__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Hemoglobin [Mass/volume] in Blood: 17.618 g/dL. Status: final. Date: 1955-12-02.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "4fee57ac-ac4d-c70d-7e82-90fd48ea324b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "718-7",
+        "display": "Hemoglobin [Mass/volume] in Blood"
+      }
+    ],
+    "text": "Hemoglobin [Mass/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/4fee57ac-ac4d-c70d-d10a-e142526db2d8"
+  },
+  "encounter": {
+    "reference": "Encounter/4fee57ac-ac4d-c70d-a3f3-a24c93c32fc4"
+  },
+  "effectiveDateTime": "1955-12-02T07:36:13-03:00",
+  "issued": "1955-12-02T07:36:13.674-03:00",
+  "valueQuantity": {
+    "value": 17.618,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 3
+pair_id: remaining70-observation-028__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Hemoglobin [Mass/volume] in Blood; Result=17.618 g/dL; Category=Laboratory; Status=final; Date=1955-12-02
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "4fee57ac-ac4d-c70d-7e82-90fd48ea324b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "718-7",
+        "display": "Hemoglobin [Mass/volume] in Blood"
+      }
+    ],
+    "text": "Hemoglobin [Mass/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/4fee57ac-ac4d-c70d-d10a-e142526db2d8"
+  },
+  "encounter": {
+    "reference": "Encounter/4fee57ac-ac4d-c70d-a3f3-a24c93c32fc4"
+  },
+  "effectiveDateTime": "1955-12-02T07:36:13-03:00",
+  "issued": "1955-12-02T07:36:13.674-03:00",
+  "valueQuantity": {
+    "value": 17.618,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 4
+pair_id: remaining70-observation-028__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Hemoglobin [Mass/volume] in Blood 17.618 g/dL on 1955-12-02, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "4fee57ac-ac4d-c70d-7e82-90fd48ea324b",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "718-7",
+        "display": "Hemoglobin [Mass/volume] in Blood"
+      }
+    ],
+    "text": "Hemoglobin [Mass/volume] in Blood"
+  },
+  "subject": {
+    "reference": "Patient/4fee57ac-ac4d-c70d-d10a-e142526db2d8"
+  },
+  "encounter": {
+    "reference": "Encounter/4fee57ac-ac4d-c70d-a3f3-a24c93c32fc4"
+  },
+  "effectiveDateTime": "1955-12-02T07:36:13-03:00",
+  "issued": "1955-12-02T07:36:13.674-03:00",
+  "valueQuantity": {
+    "value": 17.618,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 5
+pair_id: remaining70-observation-029__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Erythrocytes [#/volume] in Blood by Automated count: 3.8321 10*6/uL. Status: final. Date: 2019-02-20.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "5d2693b5-f896-3aef-4868-ebec84f0096f",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "789-8",
+        "display": "Erythrocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Erythrocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/5d2693b5-f896-3aef-1db1-2db9951f6700"
+  },
+  "encounter": {
+    "reference": "Encounter/5d2693b5-f896-3aef-38f1-3925d7fd6393"
+  },
+  "effectiveDateTime": "2019-02-20T20:50:10-03:00",
+  "issued": "2019-02-20T20:50:10.378-03:00",
+  "valueQuantity": {
+    "value": 3.8321,
+    "unit": "10*6/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*6/uL"
+  }
+}
+
+
+ITEM 6
+pair_id: remaining70-observation-029__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Erythrocytes [#/volume] in Blood by Automated count; Result=3.8321 10*6/uL; Category=Laboratory; Status=final; Date=2019-02-20
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "5d2693b5-f896-3aef-4868-ebec84f0096f",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "789-8",
+        "display": "Erythrocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Erythrocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/5d2693b5-f896-3aef-1db1-2db9951f6700"
+  },
+  "encounter": {
+    "reference": "Encounter/5d2693b5-f896-3aef-38f1-3925d7fd6393"
+  },
+  "effectiveDateTime": "2019-02-20T20:50:10-03:00",
+  "issued": "2019-02-20T20:50:10.378-03:00",
+  "valueQuantity": {
+    "value": 3.8321,
+    "unit": "10*6/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*6/uL"
+  }
+}
+
+
+ITEM 7
+pair_id: remaining70-observation-029__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Erythrocytes [#/volume] in Blood by Automated count 3.8321 10*6/uL on 2019-02-20, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "5d2693b5-f896-3aef-4868-ebec84f0096f",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "789-8",
+        "display": "Erythrocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Erythrocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/5d2693b5-f896-3aef-1db1-2db9951f6700"
+  },
+  "encounter": {
+    "reference": "Encounter/5d2693b5-f896-3aef-38f1-3925d7fd6393"
+  },
+  "effectiveDateTime": "2019-02-20T20:50:10-03:00",
+  "issued": "2019-02-20T20:50:10.378-03:00",
+  "valueQuantity": {
+    "value": 3.8321,
+    "unit": "10*6/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*6/uL"
+  }
+}
+
+
+ITEM 8
+pair_id: remaining70-observation-030__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Respiratory rate: 14 /min. Status: final. Date: 2017-09-30.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a89e8a9e-eac1-dbc2-aa7a-736043800575",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/a89e8a9e-eac1-dbc2-a846-247573f10ef1"
+  },
+  "encounter": {
+    "reference": "Encounter/a89e8a9e-eac1-dbc2-0ebe-e3f72f69fffd"
+  },
+  "effectiveDateTime": "2017-09-30T07:13:44-03:00",
+  "issued": "2017-09-30T07:13:44.457-03:00",
+  "valueQuantity": {
+    "value": 14,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 9
+pair_id: remaining70-observation-030__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Respiratory rate; Result=14 /min; Category=Vital signs; Status=final; Date=2017-09-30
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a89e8a9e-eac1-dbc2-aa7a-736043800575",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/a89e8a9e-eac1-dbc2-a846-247573f10ef1"
+  },
+  "encounter": {
+    "reference": "Encounter/a89e8a9e-eac1-dbc2-0ebe-e3f72f69fffd"
+  },
+  "effectiveDateTime": "2017-09-30T07:13:44-03:00",
+  "issued": "2017-09-30T07:13:44.457-03:00",
+  "valueQuantity": {
+    "value": 14,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}
+
+
+ITEM 10
+pair_id: remaining70-observation-030__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Respiratory rate 14 /min on 2017-09-30, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a89e8a9e-eac1-dbc2-aa7a-736043800575",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-respiratory-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "9279-1",
+        "display": "Respiratory rate"
+      }
+    ],
+    "text": "Respiratory rate"
+  },
+  "subject": {
+    "reference": "Patient/a89e8a9e-eac1-dbc2-a846-247573f10ef1"
+  },
+  "encounter": {
+    "reference": "Encounter/a89e8a9e-eac1-dbc2-0ebe-e3f72f69fffd"
+  },
+  "effectiveDateTime": "2017-09-30T07:13:44-03:00",
+  "issued": "2017-09-30T07:13:44.457-03:00",
+  "valueQuantity": {
+    "value": 14,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}

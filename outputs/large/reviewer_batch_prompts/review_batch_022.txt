@@ -1,0 +1,570 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: remaining70-observation-014__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Body mass index (BMI) [Percentile] Per age and sex; Result=94.64 %; Category=Vital signs; Status=final; Date=2013-11-21
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a0f388ef-96e2-93dc-de6f-b820d5d0401c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "59576-9",
+        "display": "Body mass index (BMI) [Percentile] Per age and sex"
+      }
+    ],
+    "text": "Body mass index (BMI) [Percentile] Per age and sex"
+  },
+  "subject": {
+    "reference": "Patient/a0f388ef-96e2-93dc-8cc9-fefe51f78aff"
+  },
+  "encounter": {
+    "reference": "Encounter/a0f388ef-96e2-93dc-b0b3-d58df93eb3a4"
+  },
+  "effectiveDateTime": "2013-11-21T18:44:23-03:00",
+  "issued": "2013-11-21T18:44:23.893-03:00",
+  "valueQuantity": {
+    "value": 94.64,
+    "unit": "%",
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+  }
+}
+
+
+ITEM 2
+pair_id: remaining70-observation-014__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Body mass index (BMI) [Percentile] Per age and sex 94.64 % on 2013-11-21, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "a0f388ef-96e2-93dc-de6f-b820d5d0401c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "59576-9",
+        "display": "Body mass index (BMI) [Percentile] Per age and sex"
+      }
+    ],
+    "text": "Body mass index (BMI) [Percentile] Per age and sex"
+  },
+  "subject": {
+    "reference": "Patient/a0f388ef-96e2-93dc-8cc9-fefe51f78aff"
+  },
+  "encounter": {
+    "reference": "Encounter/a0f388ef-96e2-93dc-b0b3-d58df93eb3a4"
+  },
+  "effectiveDateTime": "2013-11-21T18:44:23-03:00",
+  "issued": "2013-11-21T18:44:23.893-03:00",
+  "valueQuantity": {
+    "value": 94.64,
+    "unit": "%",
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+  }
+}
+
+
+ITEM 3
+pair_id: remaining70-observation-015__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]: 3 {score}. Status: final. Date: 1978-10-12.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "8ca1a5c9-6eca-d899-9784-41007c8e278d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "70274-6",
+        "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+      }
+    ],
+    "text": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+  },
+  "subject": {
+    "reference": "Patient/8ca1a5c9-6eca-d899-0e61-11b4f6ef79bb"
+  },
+  "encounter": {
+    "reference": "Encounter/8ca1a5c9-6eca-d899-e9ce-4ab7d1671ecf"
+  },
+  "effectiveDateTime": "1978-10-12T22:24:21-03:00",
+  "issued": "1978-10-12T22:24:21.944-03:00",
+  "valueQuantity": {
+    "value": 3,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 4
+pair_id: remaining70-observation-015__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]; Result=3 {score}; Category=Survey; Status=final; Date=1978-10-12
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "8ca1a5c9-6eca-d899-9784-41007c8e278d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "70274-6",
+        "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+      }
+    ],
+    "text": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+  },
+  "subject": {
+    "reference": "Patient/8ca1a5c9-6eca-d899-0e61-11b4f6ef79bb"
+  },
+  "encounter": {
+    "reference": "Encounter/8ca1a5c9-6eca-d899-e9ce-4ab7d1671ecf"
+  },
+  "effectiveDateTime": "1978-10-12T22:24:21-03:00",
+  "issued": "1978-10-12T22:24:21.944-03:00",
+  "valueQuantity": {
+    "value": 3,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 5
+pair_id: remaining70-observation-015__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ] 3 {score} on 1978-10-12, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "8ca1a5c9-6eca-d899-9784-41007c8e278d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "70274-6",
+        "display": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+      }
+    ],
+    "text": "Generalized anxiety disorder 7 item (GAD-7) total score [Reported.PHQ]"
+  },
+  "subject": {
+    "reference": "Patient/8ca1a5c9-6eca-d899-0e61-11b4f6ef79bb"
+  },
+  "encounter": {
+    "reference": "Encounter/8ca1a5c9-6eca-d899-e9ce-4ab7d1671ecf"
+  },
+  "effectiveDateTime": "1978-10-12T22:24:21-03:00",
+  "issued": "1978-10-12T22:24:21.944-03:00",
+  "valueQuantity": {
+    "value": 3,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 6
+pair_id: remaining70-observation-016__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Pain severity - 0-10 verbal numeric rating [Score] - Reported: 1 {score}. Status: final. Date: 2020-04-06.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2a8a2766-3888-231c-6ac1-cef3bd800569",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/2a8a2766-3888-231c-bca1-e55555386c50"
+  },
+  "encounter": {
+    "reference": "Encounter/2a8a2766-3888-231c-cf88-42c0846530d4"
+  },
+  "effectiveDateTime": "2020-04-06T14:00:35-03:00",
+  "issued": "2020-04-06T14:00:35.835-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 7
+pair_id: remaining70-observation-016__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Pain severity - 0-10 verbal numeric rating [Score] - Reported; Result=1 {score}; Category=Vital signs; Status=final; Date=2020-04-06
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2a8a2766-3888-231c-6ac1-cef3bd800569",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/2a8a2766-3888-231c-bca1-e55555386c50"
+  },
+  "encounter": {
+    "reference": "Encounter/2a8a2766-3888-231c-cf88-42c0846530d4"
+  },
+  "effectiveDateTime": "2020-04-06T14:00:35-03:00",
+  "issued": "2020-04-06T14:00:35.835-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 8
+pair_id: remaining70-observation-016__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Pain severity - 0-10 verbal numeric rating [Score] - Reported 1 {score} on 2020-04-06, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2a8a2766-3888-231c-6ac1-cef3bd800569",
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "72514-3",
+        "display": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+      }
+    ],
+    "text": "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
+  },
+  "subject": {
+    "reference": "Patient/2a8a2766-3888-231c-bca1-e55555386c50"
+  },
+  "encounter": {
+    "reference": "Encounter/2a8a2766-3888-231c-cf88-42c0846530d4"
+  },
+  "effectiveDateTime": "2020-04-06T14:00:35-03:00",
+  "issued": "2020-04-06T14:00:35.835-03:00",
+  "valueQuantity": {
+    "value": 1,
+    "unit": "{score}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{score}"
+  }
+}
+
+
+ITEM 9
+pair_id: remaining70-observation-017__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Monocytes [#/volume] in Blood by Automated count: 0.29944 10*3/uL. Status: final. Date: 2017-04-09.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2fb1b49d-dd75-a867-53ff-95b5258c177c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "742-7",
+        "display": "Monocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Monocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/2fb1b49d-dd75-a867-3de6-7663c3880bd2"
+  },
+  "encounter": {
+    "reference": "Encounter/2fb1b49d-dd75-a867-3b5b-795837e2dfae"
+  },
+  "effectiveDateTime": "2017-04-09T03:16:14-03:00",
+  "issued": "2017-04-09T03:16:14.623-03:00",
+  "valueQuantity": {
+    "value": 0.29944,
+    "unit": "10*3/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*3/uL"
+  }
+}
+
+
+ITEM 10
+pair_id: remaining70-observation-017__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Monocytes [#/volume] in Blood by Automated count; Result=0.29944 10*3/uL; Category=Laboratory; Status=final; Date=2017-04-09
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "2fb1b49d-dd75-a867-53ff-95b5258c177c",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "742-7",
+        "display": "Monocytes [#/volume] in Blood by Automated count"
+      }
+    ],
+    "text": "Monocytes [#/volume] in Blood by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/2fb1b49d-dd75-a867-3de6-7663c3880bd2"
+  },
+  "encounter": {
+    "reference": "Encounter/2fb1b49d-dd75-a867-3b5b-795837e2dfae"
+  },
+  "effectiveDateTime": "2017-04-09T03:16:14-03:00",
+  "issued": "2017-04-09T03:16:14.623-03:00",
+  "valueQuantity": {
+    "value": 0.29944,
+    "unit": "10*3/uL",
+    "system": "http://unitsofmeasure.org",
+    "code": "10*3/uL"
+  }
+}

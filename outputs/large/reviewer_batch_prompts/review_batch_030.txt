@@ -1,0 +1,589 @@
+You are acting as an external reviewer in a clinical-data-to-FHIR pairing evaluation workflow.
+
+You will review multiple candidate paired samples.
+Apply the same scoring rubric independently to each item.
+Do not compare items with each other.
+Judge each pair only on its own merits.
+
+For each item, return:
+- pair_id
+- faithfulness
+- unsupported_fact
+- omission
+- naturalness
+- context_leakage
+- short_rationale
+- flag_type
+
+Scoring rubric:
+- faithfulness: 1 = faithful, 0 = not faithful
+- unsupported_fact: 1 = yes, 0 = no
+- omission: 1 = yes, 0 = no
+- naturalness: 1 to 5
+- context_leakage: 1 = yes, 0 = no
+
+Allowed flag_type values:
+- none
+- possible_hallucination
+- possible_omission
+- awkward_input
+- context_leakage
+- style_uncertainty
+- other
+
+Review principles:
+1. Only judge alignment between the shown input text and the shown target FHIR JSON.
+2. Do not assume facts from linked resources unless explicitly present in the shown target JSON.
+3. Do not reward unsupported extra detail.
+4. Be conservative about unsupported facts.
+5. Be conservative about omission of core information.
+6. If the target is sparse, do not punish the input for not containing unavailable details.
+
+Return only a JSON array.
+Do not include markdown.
+Do not include any text before or after the JSON array.
+
+ITEM 1
+pair_id: remaining70-observation-041__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count: 33.475 g/dL. Status: final. Date: 2021-02-16.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "142ba37a-cbca-2be7-ea57-8b2509cdc9bd",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "786-4",
+        "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+      }
+    ],
+    "text": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/142ba37a-cbca-2be7-b5f2-defd38dd4380"
+  },
+  "encounter": {
+    "reference": "Encounter/142ba37a-cbca-2be7-b885-1ea71aced86e"
+  },
+  "effectiveDateTime": "2021-02-16T10:18:16-03:00",
+  "issued": "2021-02-16T10:18:16.383-03:00",
+  "valueQuantity": {
+    "value": 33.475,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 2
+pair_id: remaining70-observation-041__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count; Result=33.475 g/dL; Category=Laboratory; Status=final; Date=2021-02-16
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "142ba37a-cbca-2be7-ea57-8b2509cdc9bd",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "786-4",
+        "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+      }
+    ],
+    "text": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/142ba37a-cbca-2be7-b5f2-defd38dd4380"
+  },
+  "encounter": {
+    "reference": "Encounter/142ba37a-cbca-2be7-b885-1ea71aced86e"
+  },
+  "effectiveDateTime": "2021-02-16T10:18:16-03:00",
+  "issued": "2021-02-16T10:18:16.383-03:00",
+  "valueQuantity": {
+    "value": 33.475,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 3
+pair_id: remaining70-observation-041__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count 33.475 g/dL on 2021-02-16, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "142ba37a-cbca-2be7-ea57-8b2509cdc9bd",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "786-4",
+        "display": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+      }
+    ],
+    "text": "MCHC [Entitic Mass/volume] in Red Blood Cells by Automated count"
+  },
+  "subject": {
+    "reference": "Patient/142ba37a-cbca-2be7-b5f2-defd38dd4380"
+  },
+  "encounter": {
+    "reference": "Encounter/142ba37a-cbca-2be7-b885-1ea71aced86e"
+  },
+  "effectiveDateTime": "2021-02-16T10:18:16-03:00",
+  "issued": "2021-02-16T10:18:16.383-03:00",
+  "valueQuantity": {
+    "value": 33.475,
+    "unit": "g/dL",
+    "system": "http://unitsofmeasure.org",
+    "code": "g/dL"
+  }
+}
+
+
+ITEM 4
+pair_id: remaining70-observation-042__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method: 0.0036024 pg/mL. Status: final. Date: 1998-06-25.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "49809f73-05b2-8556-effb-6e7ccdd7da50",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "89579-7",
+        "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+      }
+    ],
+    "text": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+  },
+  "subject": {
+    "reference": "Patient/49809f73-05b2-8556-f388-fb6fca1ad47b"
+  },
+  "encounter": {
+    "reference": "Encounter/49809f73-05b2-8556-750c-4ffbb6f89c04"
+  },
+  "effectiveDateTime": "1998-06-25T09:20:09-03:00",
+  "issued": "1998-06-25T09:20:09.944-03:00",
+  "valueQuantity": {
+    "value": 0.0036024,
+    "unit": "pg/mL",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg/mL"
+  }
+}
+
+
+ITEM 5
+pair_id: remaining70-observation-042__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method; Result=0.0036024 pg/mL; Category=Laboratory; Status=final; Date=1998-06-25
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "49809f73-05b2-8556-effb-6e7ccdd7da50",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "89579-7",
+        "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+      }
+    ],
+    "text": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+  },
+  "subject": {
+    "reference": "Patient/49809f73-05b2-8556-f388-fb6fca1ad47b"
+  },
+  "encounter": {
+    "reference": "Encounter/49809f73-05b2-8556-750c-4ffbb6f89c04"
+  },
+  "effectiveDateTime": "1998-06-25T09:20:09-03:00",
+  "issued": "1998-06-25T09:20:09.944-03:00",
+  "valueQuantity": {
+    "value": 0.0036024,
+    "unit": "pg/mL",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg/mL"
+  }
+}
+
+
+ITEM 6
+pair_id: remaining70-observation-042__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method 0.0036024 pg/mL on 1998-06-25, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "49809f73-05b2-8556-effb-6e7ccdd7da50",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab",
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "89579-7",
+        "display": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+      }
+    ],
+    "text": "Troponin I.cardiac [Mass/volume] in Serum or Plasma by High sensitivity method"
+  },
+  "subject": {
+    "reference": "Patient/49809f73-05b2-8556-f388-fb6fca1ad47b"
+  },
+  "encounter": {
+    "reference": "Encounter/49809f73-05b2-8556-750c-4ffbb6f89c04"
+  },
+  "effectiveDateTime": "1998-06-25T09:20:09-03:00",
+  "issued": "1998-06-25T09:20:09.944-03:00",
+  "valueQuantity": {
+    "value": 0.0036024,
+    "unit": "pg/mL",
+    "system": "http://unitsofmeasure.org",
+    "code": "pg/mL"
+  }
+}
+
+
+ITEM 7
+pair_id: remaining70-observation-043__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Fall risk total [Morse Fall Scale]: 41 {#}. Status: final. Date: 2012-08-13.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "356ad884-1c1a-8189-e2de-469b929d6d57",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "59460-6",
+        "display": "Fall risk total [Morse Fall Scale]"
+      }
+    ],
+    "text": "Fall risk total [Morse Fall Scale]"
+  },
+  "subject": {
+    "reference": "Patient/356ad884-1c1a-8189-2bdb-4cfcd39ea955"
+  },
+  "encounter": {
+    "reference": "Encounter/356ad884-1c1a-8189-54c5-bd33ad259dfd"
+  },
+  "effectiveDateTime": "2012-08-13T07:37:07-03:00",
+  "issued": "2012-08-13T07:37:07.603-03:00",
+  "valueQuantity": {
+    "value": 41,
+    "unit": "{#}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{#}"
+  }
+}
+
+
+ITEM 8
+pair_id: remaining70-observation-043__semi_structured
+resource_type: Observation
+input_style: semi_structured
+input_text:
+Observation=Fall risk total [Morse Fall Scale]; Result=41 {#}; Category=Survey; Status=final; Date=2012-08-13
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "356ad884-1c1a-8189-e2de-469b929d6d57",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "59460-6",
+        "display": "Fall risk total [Morse Fall Scale]"
+      }
+    ],
+    "text": "Fall risk total [Morse Fall Scale]"
+  },
+  "subject": {
+    "reference": "Patient/356ad884-1c1a-8189-2bdb-4cfcd39ea955"
+  },
+  "encounter": {
+    "reference": "Encounter/356ad884-1c1a-8189-54c5-bd33ad259dfd"
+  },
+  "effectiveDateTime": "2012-08-13T07:37:07-03:00",
+  "issued": "2012-08-13T07:37:07.603-03:00",
+  "valueQuantity": {
+    "value": 41,
+    "unit": "{#}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{#}"
+  }
+}
+
+
+ITEM 9
+pair_id: remaining70-observation-043__shorthand_note
+resource_type: Observation
+input_style: shorthand_note
+input_text:
+Fall risk total [Morse Fall Scale] 41 {#} on 2012-08-13, status final
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "356ad884-1c1a-8189-e2de-469b929d6d57",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-screening-assessment"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "survey",
+          "display": "Survey"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "59460-6",
+        "display": "Fall risk total [Morse Fall Scale]"
+      }
+    ],
+    "text": "Fall risk total [Morse Fall Scale]"
+  },
+  "subject": {
+    "reference": "Patient/356ad884-1c1a-8189-2bdb-4cfcd39ea955"
+  },
+  "encounter": {
+    "reference": "Encounter/356ad884-1c1a-8189-54c5-bd33ad259dfd"
+  },
+  "effectiveDateTime": "2012-08-13T07:37:07-03:00",
+  "issued": "2012-08-13T07:37:07.603-03:00",
+  "valueQuantity": {
+    "value": 41,
+    "unit": "{#}",
+    "system": "http://unitsofmeasure.org",
+    "code": "{#}"
+  }
+}
+
+
+ITEM 10
+pair_id: remaining70-observation-044__concise_clinical
+resource_type: Observation
+input_style: concise_clinical
+input_text:
+Heart rate: 84 /min. Status: final. Date: 2015-07-23.
+target_fhir_json:
+{
+  "resourceType": "Observation",
+  "id": "93cd3ea9-832e-7ae6-610b-4c4c04f0ed2d",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-heart-rate"
+    ]
+  },
+  "status": "final",
+  "category": [
+    {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs",
+          "display": "Vital signs"
+        }
+      ]
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://loinc.org",
+        "code": "8867-4",
+        "display": "Heart rate"
+      }
+    ],
+    "text": "Heart rate"
+  },
+  "subject": {
+    "reference": "Patient/93cd3ea9-832e-7ae6-61a7-2c8aec8041bb"
+  },
+  "encounter": {
+    "reference": "Encounter/93cd3ea9-832e-7ae6-4102-275addf43f2e"
+  },
+  "effectiveDateTime": "2015-07-23T11:24:55-03:00",
+  "issued": "2015-07-23T11:24:55.119-03:00",
+  "valueQuantity": {
+    "value": 84,
+    "unit": "/min",
+    "system": "http://unitsofmeasure.org",
+    "code": "/min"
+  }
+}

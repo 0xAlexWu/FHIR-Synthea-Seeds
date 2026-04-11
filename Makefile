@@ -7,7 +7,7 @@ REMAINING_PAIR_SCRIPT := scripts/generate_synthea_remaining70_pairs.py
 REVIEWER_SCRIPT := scripts/package_ai_reviewer_requests.py
 BATCH_SCRIPT := scripts/build_reviewer_batches.py
 
-.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50 generate-pilot50-pairs select-remaining70 generate-remaining70-pairs package-ai-reviewers build-review-batches
+.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50 generate-pilot50-pairs select-remaining70 generate-remaining70-pairs package-ai-reviewers build-review-batches build-review-batches-remaining70
 
 profile-large:
 	$(PYTHON) $(PROFILE_SCRIPT) profile-large --output-dir outputs/large
@@ -38,3 +38,14 @@ package-ai-reviewers:
 
 build-review-batches:
 	$(PYTHON) $(BATCH_SCRIPT) --output-dir outputs/large
+
+build-review-batches-remaining70:
+	$(PYTHON) $(BATCH_SCRIPT) \
+		--pairs-file outputs/large/synthea_remaining70_pair_candidates.jsonl \
+		--flags-file outputs/large/synthea_remaining70_pair_review_flags.csv \
+		--output-dir outputs/large \
+		--continue-numbering \
+		--index-name reviewer_batch_index_remaining70.csv \
+		--manifest-name reviewer_batch_manifest_remaining70.jsonl \
+		--notes-name reviewer_batching_notes_remaining70.md \
+		--high-risk-name high_risk_remaining70_pairs.csv
