@@ -65,6 +65,18 @@ Equivalent `make` target:
 make generate-pilot50-pairs
 ```
 
+Package the pair candidates into self-contained AI reviewer requests:
+
+```bash
+python3 scripts/package_ai_reviewer_requests.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make package-ai-reviewers
+```
+
 If you prefer to run the upstream generator yourself first, this remains
 supported too:
 
@@ -101,6 +113,13 @@ The pair-generation step writes:
 - `synthea_pilot50_pair_candidates.csv`
 - `synthea_pilot50_pair_generation_summary.md`
 - `synthea_pilot50_pair_review_flags.csv`
+
+The AI-review packaging step writes:
+
+- `ai_reviewer_requests.jsonl`
+- `ai_reviewer_requests.csv`
+- `ai_reviewer_results_template.csv`
+- `ai_review_batching_summary.md`
 
 For GitHub-friendly publication, the compressed `candidate_seed_catalog.csv.gz`
 is intended to be checked in, while the raw `candidate_seed_catalog.csv` can stay
