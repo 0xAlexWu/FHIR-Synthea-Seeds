@@ -1,8 +1,9 @@
 PYTHON ?= python3
 PROFILE_SCRIPT := scripts/fhir_pool_profiler.py
 PILOT_SCRIPT := scripts/select_synthea_pilot50.py
+PAIR_SCRIPT := scripts/generate_synthea_pilot50_pairs.py
 
-.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50
+.PHONY: profile-large profile-dir generate-2000-and-profile select-pilot50 generate-pilot50-pairs
 
 profile-large:
 	$(PYTHON) $(PROFILE_SCRIPT) profile-large --output-dir outputs/large
@@ -18,3 +19,6 @@ generate-2000-and-profile:
 
 select-pilot50:
 	$(PYTHON) $(PILOT_SCRIPT) --output-dir outputs/large
+
+generate-pilot50-pairs:
+	$(PYTHON) $(PAIR_SCRIPT) --output-dir outputs/large

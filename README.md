@@ -53,6 +53,18 @@ Equivalent `make` target:
 make select-pilot50
 ```
 
+Generate the first pairing-pilot input variants from the selected pilot-50 seeds:
+
+```bash
+python3 scripts/generate_synthea_pilot50_pairs.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make generate-pilot50-pairs
+```
+
 If you prefer to run the upstream generator yourself first, this remains
 supported too:
 
@@ -82,6 +94,13 @@ The pilot-selection step writes:
 - `synthea_pilot50_selected.jsonl`
 - `synthea_pilot50_summary.md`
 - `synthea_pilot50_rejected_examples.csv`
+
+The pair-generation step writes:
+
+- `synthea_pilot50_pair_candidates.jsonl`
+- `synthea_pilot50_pair_candidates.csv`
+- `synthea_pilot50_pair_generation_summary.md`
+- `synthea_pilot50_pair_review_flags.csv`
 
 For GitHub-friendly publication, the compressed `candidate_seed_catalog.csv.gz`
 is intended to be checked in, while the raw `candidate_seed_catalog.csv` can stay

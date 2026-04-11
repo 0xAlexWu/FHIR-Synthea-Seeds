@@ -1,0 +1,14 @@
+pair_id,seed_id,resource_type,flag_type,flag_reason
+pilot50-condition-001__patient_utterance,Condition/076ce495-0477-ed52-8429-4a68d4e3221f,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-002__patient_utterance,Condition/03d53d8d-0e08-7644-0e04-8983cefa9347,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-003__concise_clinical,Condition/019e6247-d184-3c28-c72a-fd507eb09b4c,Condition,sparse_seed,This seed was kept to 2 variants because a third faithful style was not reliable enough.
+pilot50-condition-003__semi_structured,Condition/019e6247-d184-3c28-c72a-fd507eb09b4c,Condition,sparse_seed,This seed was kept to 2 variants because a third faithful style was not reliable enough.
+pilot50-condition-004__concise_clinical,Condition/05db72b7-eda9-85c9-703b-c0404c3ae8d7,Condition,sparse_seed,This seed was kept to 2 variants because a third faithful style was not reliable enough.
+pilot50-condition-004__semi_structured,Condition/05db72b7-eda9-85c9-703b-c0404c3ae8d7,Condition,sparse_seed,This seed was kept to 2 variants because a third faithful style was not reliable enough.
+pilot50-condition-005__patient_utterance,Condition/0443254f-7306-f744-c8e4-21524d693623,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-006__patient_utterance,Condition/06537fa0-88e4-a5f1-3a0a-9bb49cae9346,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-007__patient_utterance,Condition/0a84f58e-5ab1-0069-da6a-e96017dcfb89,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-008__patient_utterance,Condition/095dd3d9-8eb6-e786-d7f9-686ea6fec31c,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-009__patient_utterance,Condition/00f9e3dc-c68e-7a7d-d3bb-4a79d77acb36,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-condition-010__patient_utterance,Condition/08056bc1-b178-1d21-6eda-44840fd1882b,Condition,style_uncertainty,Condition text was translated into first-person phrasing; review tone and fidelity before downstream use.
+pilot50-patient-003__semi_structured,Patient/01e8022f-bd3e-b493-9190-3e87e8f94023,Patient,near_duplicate_variant,Variant wording is very close to another variant for the same seed.
