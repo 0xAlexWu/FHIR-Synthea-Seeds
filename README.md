@@ -65,6 +65,30 @@ Equivalent `make` target:
 make generate-pilot50-pairs
 ```
 
+Select the remaining 70 non-overlapping Synthea mother-pool seeds:
+
+```bash
+python3 scripts/select_synthea_remaining70.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make select-remaining70
+```
+
+Generate the revised pairing candidates for the new remaining-70 seeds:
+
+```bash
+python3 scripts/generate_synthea_remaining70_pairs.py --output-dir outputs/large
+```
+
+Equivalent `make` target:
+
+```bash
+make generate-remaining70-pairs
+```
+
 Package the pair candidates into self-contained AI reviewer requests:
 
 ```bash
@@ -125,6 +149,19 @@ The pair-generation step writes:
 - `synthea_pilot50_pair_candidates.csv`
 - `synthea_pilot50_pair_generation_summary.md`
 - `synthea_pilot50_pair_review_flags.csv`
+
+The remaining-70 selection step writes:
+
+- `synthea_remaining70_selected.csv`
+- `synthea_remaining70_selected.jsonl`
+- `synthea_remaining70_selection_summary.md`
+
+The revised remaining-70 pair-generation step writes:
+
+- `synthea_remaining70_pair_candidates.jsonl`
+- `synthea_remaining70_pair_candidates.csv`
+- `synthea_remaining70_pair_generation_summary.md`
+- `synthea_remaining70_pair_review_flags.csv`
 
 The AI-review packaging step writes:
 

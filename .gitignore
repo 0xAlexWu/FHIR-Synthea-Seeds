@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.DS_Store
 
 # Local upstream checkouts and unpacked datasets
 /sample-bulk-fhir-datasets/
